@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deliberative Assembly — Learning Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#101b1a;--panel:#1b2927;--line:#3d5550;--gold:#dfbb78;--text:#f2efe5;--muted:#b1c0b8;--blue:#6bb3ef;--red:#f18d8d}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}header{padding:18px 25px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}h1{font:600 27px Georgia,serif;margin:0;color:var(--gold)}h2{font:600 24px Georgia,serif;margin:4px 0 12px}h3{margin:12px 0 8px}p{margin:7px 0 12px}.muted,small{color:var(--muted)}main{max-width:1450px;margin:auto;padding:18px}.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);gap:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:17px;margin-bottom:15px}.felt{background:radial-gradient(ellipse at center,#205744,#123a31 70%,#0b2c27);border:7px double var(--gold);border-radius:47%/33%;min-height:310px;padding:28px 18px;display:grid;grid-template-columns:1fr 1.1fr 1fr;align-items:center;gap:12px}.seat{border:1px solid #6b8379;background:#122c28b8;padding:7px 9px;border-radius:10px;margin:5px 0;font-size:12px}.seat.blue{border-left:4px solid var(--blue)}.seat.red{border-left:4px solid var(--red)}.seat.me{box-shadow:0 0 0 2px var(--gold)}.seat .choice-history{display:block;color:#f8ebbd;line-height:1.45;margin-top:5px;font-size:11px}.seat .revise-mark{color:#ffca90}.seat .vote-mark{color:#a5f1d2}.felt{grid-template-columns:minmax(0,1.25fr) minmax(145px,.8fr) minmax(0,1.25fr)}.seat{overflow-wrap:anywhere}.hold-alert{border:2px solid #e5bd72;background:#3b3049;padding:13px;margin:12px 0}.hold-alert strong{color:#ffda8d}.center{text-align:center;color:#e9d7ac}.center strong{font:600 23px Georgia,serif}.pill{border:1px solid var(--line);border-radius:100px;padding:5px 10px;display:inline-block;margin:3px 3px 3px 0;font-size:12px}.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}button,select,textarea,input{font:inherit}button{background:#324a44;color:var(--text);border:1px solid #6d8980;border-radius:9px;padding:10px 14px;cursor:pointer}button:hover{background:#45665b}button.primary{background:#a88445;color:#111c17;font-weight:700;border-color:#dfbb78}button:disabled{opacity:.45;cursor:not-allowed}.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:12px 0}.choice{min-height:70px}.choice.selected{border:2px solid var(--gold);background:#465f47}.callout{background:#233b34;border-left:3px solid var(--gold);padding:12px;border-radius:8px;margin:12px 0}.evidence{background:#172e32;border:1px solid #3d6771;padding:12px;border-radius:9px;margin:8px 0}.event{border-bottom:1px solid var(--line);padding:7px 0;font-size:13px}.metric{display:inline-block;min-width:110px;margin:7px 9px 7px 0}.metric b{display:block;font-size:24px;color:var(--gold)}.dashboard-grid{display:grid;grid-template-columns:1fr;gap:12px}.mini-chart{margin-top:12px}.player-bars .bar-row{margin-top:8px}.player-bars .bar-name{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}.bar-track.compact{height:10px}.tag{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold)}table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:7px;text-align:left;border-bottom:1px solid var(--line)}details{border-bottom:1px solid var(--line);padding:9px 0}summary{cursor:pointer;font-weight:600}textarea{width:100%;min-height:70px;background:#102521;color:white;border:1px solid var(--line);border-radius:8px;padding:9px}select{background:#102521;color:white;border:1px solid var(--line);border-radius:8px;padding:8px}nav button.active{background:#84683c} .hidden{display:none!important}.progress{display:flex;gap:5px;margin:8px 0 14px}.progress span{flex:1;text-align:center;background:#263b35;border-radius:6px;padding:5px;font-size:11px}.progress .done{background:#376f55}.progress .active{outline:2px solid var(--gold)}@media(max-width:920px){.layout{grid-template-columns:1fr}.felt{min-height:260px;padding:20px 9px}.choices{grid-template-columns:1fr 1fr}}@media(max-width:460px){.felt{grid-template-columns:1fr 1fr;border-radius:30px}.center{grid-column:1/-1;grid-row:1}.seat{font-size:10px}header{padding:14px}}
+ .creator-credit{margin-top:7px;font-size:12px;letter-spacing:.015em;color:var(--gold)}
+
+/* Dark navy and gold, square-cornered interface; preserve oval poker table. */
+:root{color-scheme:dark;--bg:#0a1325;--panel:#14233b;--line:#354b6c;--gold:#e5bd72;--text:#f1f4fc;--muted:#aabbd5;--blue:#74b8ff;--red:#fa969a;--input:#0c1b31;--callout:#203552;--evidence:#122a48;--seat:#152d47;--felt1:#175544;--felt2:#103b31;--felt3:#082b27}
+body{background:var(--bg);color:var(--text)}
+header{background:var(--bg)}
+.creator-banner{padding:9px 25px;background:#071020;color:var(--gold);font-size:12px;letter-spacing:.035em;border-bottom:1px solid var(--line)}
+.panel,.seat,.pill,button,select,textarea,input,.choice,.callout,.evidence,.progress span{border-radius:0!important}
+.panel{background:var(--panel);border-color:var(--line)}
+button{background:#223958;border-color:#526a8c;color:var(--text)}button:hover{background:#315079}button.primary{background:var(--gold);border-color:var(--gold);color:#101829}
+nav button.active{background:#4d6590}
+.felt{background:radial-gradient(ellipse at center,var(--felt1),var(--felt2) 70%,var(--felt3));border-radius:47%/33%!important}
+.seat{background:var(--seat);border-color:#6b8379}.callout{background:var(--callout)}.evidence{background:var(--evidence);border-color:var(--line)}
+textarea,select{background:var(--input);color:var(--text);border-color:var(--line)}
+.progress span{background:var(--callout)}.progress .done{background:#326f63}
+.choice.selected{background:#354d71;border-color:var(--gold)}
+body.light{color-scheme:light;--bg:#f2f5fa;--panel:#ffffff;--line:#b5c5db;--gold:#946522;--text:#182940;--muted:#4d617b;--blue:#0f4f8c;--red:#bd3c4b;--input:#f7f9fd;--callout:#e8eff8;--evidence:#eaf2fc;--seat:#e4eef4;--felt1:#247359;--felt2:#16503d;--felt3:#0a3c32}
+body.light header{background:#e7edf6}body.light .creator-banner{background:#e3eaf5;color:#825a1d}
+body.light button{background:#eef2f7;border-color:#a0b3cd;color:#182940}body.light button:hover{background:#dbe5f1}body.light button.primary{background:#9a7130;color:white;border-color:#9a7130}body.light nav button.active{background:#c1d3ea}body.light .workspace-tabs button{background:#f7f9fc;border-color:#a7b8ce;color:#233956}body.light .workspace-tabs button.active{background:#a7772a;color:#111c17;border-color:#a7772a}
+body.light .felt,body.light .felt .seat,body.light .felt .center{color:#fff}body.light .seat{background:#143a39dd}body.light .felt small{color:#e3eae6}
+body.light .progress span{background:#e5ecf6}body.light .progress .done{background:#b8decf}body.light .choice.selected{background:#e3d4b7}
+.export-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.export-actions button{padding:10px 7px;font-size:13px}.export-list{display:grid;gap:9px}.export-list label{display:flex;align-items:flex-start;gap:9px;padding:10px;border:1px solid var(--line);cursor:pointer}.export-list label input{margin-top:5px;accent-color:var(--gold)}.export-list label small{display:block;line-height:1.4;margin-top:3px}.export-list label b{font-size:13px}.card-deck{display:flex;justify-content:center;gap:16px;margin:25px 0}.draw-card{height:148px;width:122px;display:grid;place-items:center;text-align:center;padding:10px;background:linear-gradient(140deg,#203b64,#10223f);border:2px solid var(--gold);color:var(--gold);font:700 20px Georgia,serif;box-shadow:6px 7px 0 #091323}.draw-card .card-stack{display:grid;gap:8px;place-items:center}.draw-card .card-icon{font-size:34px;line-height:1}.draw-card.party-blue{background:linear-gradient(140deg,#234b80,#132b49);border-color:#6ab0ff;color:#cde7ff}.draw-card.party-red{background:linear-gradient(140deg,#5d2535,#36131d);border-color:#ff96a4;color:#ffd3d8}.draw-card.role-card{background:linear-gradient(140deg,#293448,#151d2c);border-color:var(--gold);color:#f7df9e}.draw-card.card-back,.draw-card.role-card.card-back{background:#080a0e!important;border-color:#595d69!important;color:#fff!important;box-shadow:5px 6px 0 #080a0e!important;font-size:32px}.role-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 6px}.role-legend span{border:1px solid var(--line);padding:8px 10px;background:rgba(255,255,255,.03);font-size:12px}.card-note{font-size:12px;color:var(--muted);margin-top:6px}.card-deck.dealing .draw-card{animation:deal 1.2s ease-in-out both}.card-deck.dealing .draw-card:nth-child(2){animation-delay:.12s}@keyframes deal{0%{transform:translateY(-20px) rotateY(0deg);opacity:.35}55%{transform:translateY(8px) rotateY(90deg)}100%{transform:translateY(0) rotateY(180deg);opacity:1}}
+.chart-title{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin:18px 0 8px;border-bottom:1px solid var(--line);padding-bottom:7px}.chart-title small{font-size:11px;font-weight:400}.bar-label{display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-top:9px}.bar-track{height:12px;background:var(--callout);border:1px solid var(--line);margin-top:4px}.bar-fill{height:100%;background:var(--gold);transition:width .3s ease}.bar-fill.color-1{background:var(--blue)}.bar-fill.color-2{background:#a6a2e9}.stage-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}.stage-summary div{background:var(--callout);padding:9px 5px;min-width:0}.stage-summary strong{display:block;font-size:21px;color:var(--gold)}.stage-summary strong small{font-size:12px}.stage-summary span{font-size:10px;color:var(--muted)}.trend-chart{display:flex;align-items:end;gap:7px;height:110px;padding:7px 0 0;border-bottom:1px solid var(--line)}.trend-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;font-size:11px;min-width:0}.trend-col span{font-size:10px}.trend-value{font-weight:700;color:var(--gold)}.trend-bar{width:70%;min-height:4px;background:var(--gold)}.trend-bar.positive{background:#64c3a2}.trend-bar.negative{background:#8191a7}.chart-legend{font-size:11px;color:var(--muted);margin-top:6px}
+.party-blue{border-color:#579fe7!important;color:#8fc9ff!important;background:#15345b!important}.party-red{border-color:#e27480!important;color:#ffb6bb!important;background:#452435!important}.party-joint{border-color:var(--gold)!important;color:var(--gold)!important;background:#373047!important}
+.my-role{border:2px solid var(--gold);background:#263b4f;padding:14px;margin-bottom:14px;position:sticky;top:0;z-index:3;box-shadow:0 4px 14px #0005}
+.my-role strong{color:#f9d88f;font-size:17px}.pointline{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}.pointline span{background:#0f223c;border:1px solid #567393;padding:7px 10px}.pressure{border:2px solid #ea9874;background:#433041;padding:12px;margin:12px 0}.pressure b{color:#ffd3ad}.stage-nav{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}.scoreboard{overflow-x:auto}body.light .my-role{background:#f6ebcf;color:#132238}body.light .pointline span{background:#e3ecf8;color:#15263c}body.light .pressure{background:#ffefde;color:#3a2331}body.light .pressure b{color:#93410f}
+
+.step-navigation{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:10px;background:rgba(125,145,165,.09)}
+.step-list{display:flex;gap:6px;flex-wrap:wrap}.step-token{padding:7px 9px;border-radius:7px;border:1px solid #64748b;font-size:12px}.step-active{background:#e7c477;color:#142337;font-weight:bold}.step-done{border-color:#4ca67f;color:#8fdfbd}.step-locked{opacity:.45}
+.my-role.party-identity-red{border-color:#ef7586;background:rgba(132,28,45,.22)}.my-role.party-identity-red strong{color:#ffb0b7}.my-role.party-identity-blue{border-color:#62b4ff;background:rgba(28,79,132,.23)}.my-role.party-identity-blue strong{color:#a6d7ff}
+
+.current-step-instruction{padding:9px 10px;background:var(--callout);border-left:3px solid var(--gold);margin-top:8px}.current-step-instruction small{display:block;margin-top:3px}
+/* Neutral institutional panel; party color indicates identity, not danger. */
+.power-overview{border:1px solid var(--line);background:var(--panel);padding:10px;border-radius:9px;margin:10px 0;color:var(--text)}
+.power-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
+.power-label{font-weight:700;min-width:105px}.power-party{font-weight:700;border:1px solid;padding:4px 8px;border-radius:5px}
+.power-blue{background:#143c6b;color:#bfe1ff;border-color:#4b9fea}.power-red{background:#612b39;color:#ffd0d4;border-color:#e17886}
+.power-value{margin-left:auto}.power-rule{padding:10px;margin-top:10px;background:var(--callout);border-left:4px solid var(--gold);font-size:13px;line-height:1.5}
+.power-rule b{display:block;margin-bottom:3px;color:var(--text)}
+@media(max-width:650px){.power-value{margin-left:0}}
+/* Three-pane workspace: assembly table fixed at left, selected view at right */
+main{max-width:1700px;padding:12px 16px}.layout{grid-template-columns:minmax(435px,1.05fr) minmax(470px,1fr);gap:14px;align-items:start}
+.assembly-column,.game-column{min-width:0}.assembly-table-panel{padding:13px;margin-bottom:10px}.assembly-table-panel h2{margin-bottom:5px;font-size:21px}
+.assembly-table-panel .felt{min-height:270px;padding:17px 11px;gap:7px}.assembly-table-panel .seat{margin:4px 0;padding:6px 8px}
+.assembly-log-panel{padding:12px}.assembly-log-panel h3{margin:0 0 6px}.assembly-log-panel #log{max-height:140px;overflow:auto}
+.game-column{position:sticky;top:10px}.workspace-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:9px}
+.workspace-tabs button{padding:10px 5px;min-height:44px;font-size:12px;line-height:1.25;background:transparent;border:1px solid var(--line);color:var(--text)}
+.workspace-tabs button.active{color:#15231d;background:var(--gold);border-color:var(--gold);font-weight:800}
+.work-pane.hidden{display:none!important}.work-pane .panel{margin-bottom:8px}.game-board-panel{padding:13px}
+.game-board-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid var(--line);margin-bottom:9px;padding-bottom:8px}.game-board-heading h2{font-size:23px;margin:0}
+.step-counter{font-weight:800;white-space:nowrap;background:var(--gold);color:#17251f;border-radius:9px;padding:8px 12px;font-size:17px;font-variant-numeric:tabular-nums}
+.game-board-panel .my-role{position:relative;top:auto;padding:9px;margin-bottom:10px}.game-board-panel .my-role strong{font-size:14px}.game-board-panel .pointline{margin:5px 0}.game-board-panel .pointline span{padding:4px 7px;font-size:12px}
+.game-board-panel h2{font-size:22px;line-height:1.25}.game-board-panel .callout{padding:9px;margin:9px 0}.game-board-panel .step-navigation{padding:7px;margin:8px 0}.game-board-panel .step-token{padding:4px 6px;font-size:11px}
+.game-board-panel .choices{margin:7px 0}.game-board-panel .choice{min-height:54px}.game-board-panel p{margin:6px 0 9px}.game-board-panel .row{gap:6px}.task-section{margin:10px 0 0}.policy-card,.selection-card,.confidence-card,.reason-card{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.policy-card .tag{margin-bottom:6px}.policy-card h2{margin:0 0 8px}.task-section .section-label{font-size:11px;letter-spacing:.06em;color:var(--muted);font-weight:800;margin-bottom:6px}
+@media(max-width:1050px){.layout{grid-template-columns:minmax(0,1fr)}.game-column{position:static}.assembly-table-panel .felt{min-height:270px}.workspace-tabs{position:sticky;top:0;z-index:6;background:var(--bg);padding:5px 0}}
+@media(max-width:560px){main{padding:9px}.panel{padding:11px}.assembly-table-panel .felt{grid-template-columns:minmax(0,1fr) minmax(90px,.7fr) minmax(0,1fr);padding:9px 5px;gap:4px}.assembly-table-panel .seat{font-size:10px;padding:5px 4px}.assembly-table-panel .seat .choice-history{font-size:10px}.workspace-tabs button{font-size:11px}.step-counter{font-size:14px;padding:7px}}
+
+/* Focused game board layout: task first, vertical round progress on right */
+.game-board-panel #task .my-role small{display:block;margin-top:4px;line-height:1.4}
+.game-board-panel #task .step-token.step-active{color:var(--text)!important}
+.game-board-panel #task .step-token.step-done{color:var(--text)!important}
+.game-board-panel #task{display:grid;grid-template-columns:minmax(0,1fr) 142px;column-gap:14px;align-items:start}
+.game-board-panel #task > :not(.step-navigation){grid-column:1;min-width:0}
+.game-board-panel #task > .step-navigation{grid-column:2;grid-row:1 / span 40;position:sticky;top:14px;margin:0;padding:9px;border:1px solid var(--line);background:var(--callout)}
+.game-board-panel #task .step-list{display:flex;flex-direction:column;gap:6px}
+.game-board-panel #task .step-token{display:block;text-align:left;white-space:normal;font-size:11px;line-height:1.3;padding:8px 7px;border-left:3px solid transparent}
+.game-board-panel #task .step-token.step-active{border-left-color:var(--gold);font-weight:800;background:var(--panel)}
+.game-board-panel #task .step-token.step-done{border-left-color:#60b89a;opacity:.8}
+.game-board-panel #task .step-token.step-locked{opacity:.55}
+.game-board-panel #task > h2{font-size:clamp(19px,2vw,25px);line-height:1.23;margin:4px 0 10px}
+.game-board-panel #task .my-role{position:static;padding:8px 10px;margin:0 0 6px}
+.game-board-panel #task .my-role strong{font-size:12px}
+.game-board-panel #task .my-role .pointline{display:none}
+.game-board-panel #task .round-conditions{font-size:12px;color:var(--muted);padding:5px 0 9px}
+.game-board-panel #task .round-conditions summary{font-size:12px;font-weight:500}
+.game-board-panel #task .round-conditions .row{padding-top:8px}
+.game-board-panel #task .current-step-instruction{padding:7px 10px;margin:7px 0;background:var(--callout);border-left:3px solid var(--gold);font-size:12px}
+.game-board-panel #task .current-step-instruction small{display:none}
+.game-board-panel #task .initial-word-panel{padding:0 0 5px}
+.game-board-panel #task .section-label{font-size:11px;color:var(--muted);letter-spacing:.06em;font-weight:700}
+.game-board-panel #task .initial-word-panel .choices{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0 15px}
+.game-board-panel #task .initial-word-panel .choice{min-height:44px;flex:1 1 100px;padding:9px 6px;font-weight:700}
+.game-board-panel #task .confidence-block{border-top:1px solid var(--line);padding-top:13px;margin-top:4px}
+.game-board-panel #task .confidence-block label{display:block;font-size:13px}
+.game-board-panel #task .confidence-block strong{color:var(--gold)}
+.game-board-panel #task .confidence-block input{width:100%;accent-color:var(--gold);margin:11px 0 3px}
+.game-board-panel #task .confidence-block small{font-size:11px;display:block}
+.game-board-panel #task .decision-reason{margin:13px 0 10px}
+.game-board-panel #task .decision-reason label{display:block;font-size:12px;margin-bottom:5px}
+.game-board-panel #task .decision-reason select{width:100%;max-width:360px}
+.game-board-panel #task .submit-word{margin-top:14px}
+.game-board-panel #task .competition-footnote{border-top:1px solid var(--line);padding-top:9px;margin-top:18px;color:var(--muted);font-size:11px;line-height:1.5}
+.game-board-panel #task .competition-footnote b{color:var(--text)}
+@media(max-width:570px){.game-board-panel #task{grid-template-columns:minmax(0,1fr) 108px;gap:8px}.game-board-panel #task .step-token{font-size:10px;padding:6px 4px}.game-board-panel #task>.step-navigation{padding:4px}}
+
+/* Clear stage workflow and separately boxed reference card */
+.game-board-panel #task>.my-role{grid-row:auto}
+.game-board-panel #task>.step-navigation{display:grid;gap:12px;align-content:start;background:transparent!important;border:none!important;padding:0!important;margin:0!important;top:12px}
+.step-tracker,.round-reference{border:1px solid var(--line);border-radius:9px;background:var(--callout);padding:9px;min-width:0}
+.ref-title{font-size:12px;font-weight:800;margin-bottom:8px;color:var(--text)}
+.round-reference{display:block}
+.round-reference .ref-list{display:grid;gap:6px}
+.round-reference .ref-item{display:grid;gap:1px;border:1px solid var(--line);padding:6px;border-radius:5px;background:var(--panel);font-size:11px;overflow-wrap:anywhere}
+.round-reference .ref-item b{font-size:10px;color:var(--muted);font-weight:700}
+.round-reference .ref-item span{color:var(--text)}
+.ref-sponsor{padding:8px 5px;margin-bottom:8px;border-radius:5px;text-align:center;font-weight:800;font-size:12px;border:1px solid}
+.ref-sponsor.sponsor-blue{background:#123b6b;color:#e1f1ff;border-color:#459ce9}
+.ref-sponsor.sponsor-red{background:#672335;color:#ffe1e4;border-color:#e3778a}
+.ref-sponsor.sponsor-joint{background:#65501d;color:#fff1b6;border-color:#deb85b}
+.game-board-panel #task .current-step-instruction{background:var(--callout);padding:8px 10px;border-left:3px solid var(--gold);font-size:12px}
+.game-board-panel #task .task-checklist{background:transparent;border:none;padding:0;margin:6px 0 12px}
+.game-board-panel #task .task-checklist>b{font-size:12px;color:var(--muted);margin:0 0 6px}
+.game-board-panel #task .task-checklist ol{list-style-type:lower-alpha;padding-left:23px;margin:0}
+.game-board-panel #task .task-checklist li{padding:3px 0;font-size:13px}
+.game-board-panel #task .task-checklist li::marker{font-weight:800;color:var(--gold)}
+/* Light mode: strong, accessible party identification without low-contrast pastel text */
+body.light .game-board-panel #task .my-role.party-identity-blue{background:#e0eaf6!important;border-color:#0b477e!important;color:#18324f!important}
+body.light .game-board-panel #task .my-role.party-identity-blue strong{color:#073763!important}
+body.light .game-board-panel #task .my-role.party-identity-red{background:#f5e0e3!important;border-color:#8e2030!important;color:#42222a!important}
+body.light .game-board-panel #task .my-role.party-identity-red strong{color:#771525!important}
+body.light .my-role.party-identity-blue strong{color:#073763!important}
+body.light .my-role.party-identity-red strong{color:#771525!important}
+body.light .game-board-panel #task .ref-sponsor.sponsor-blue{background:#174b7e;color:#fff;border-color:#0d3763}
+body.light .game-board-panel #task .ref-sponsor.sponsor-red{background:#8e2030;color:#fff;border-color:#631524}
+body.light .game-board-panel #task .ref-sponsor.sponsor-joint{background:#98641f;color:#fff;border-color:#70420c}
+
+/* Compact, consistently labeled three-task workflow for word selection */
+.game-board-panel #task .initial-word-panel{display:flex;flex-direction:column;gap:10px;padding:0;margin:0}
+.game-board-panel #task .workflow-overview{margin:0!important;padding:6px 9px!important;border:1px solid var(--line)!important;border-radius:9px;background:var(--callout)!important}
+.workflow-overview .overview-title{font-size:10px;font-weight:800;text-transform:uppercase;color:var(--muted);letter-spacing:.07em;margin-bottom:4px}
+.workflow-overview .task-ribbon{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+.workflow-overview .task-ribbon span{border:1px solid var(--line);background:var(--panel);padding:5px 5px;border-radius:6px;line-height:1.2;text-align:center;font-size:11px}
+.workflow-overview .task-ribbon b{color:var(--gold);font-size:14px;margin-right:3px}
+.game-board-panel #task .workflow-card{margin:0;padding:11px 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.workflow-title{display:flex;align-items:center;gap:7px;font-size:13px;margin-bottom:9px}
+.workflow-title .workflow-letter{color:var(--gold);font-weight:900;font-size:15px}
+.workflow-title small{font-size:11px;margin-left:auto}
+.policy-in-card{margin:0 0 10px}.policy-eyebrow{display:block;font-size:10px;letter-spacing:.05em;color:var(--muted);margin:5px 0}
+.game-board-panel #task .policy-in-card h2{font-size:20px;line-height:1.2;margin:5px 0 10px}
+.game-board-panel #task .workflow-card .choices{margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.game-board-panel #task .workflow-card .choice{min-height:42px;padding:8px 5px;font-size:12px;min-width:0}
+.game-board-panel #task .workflow-card .confidence-block{border:0;padding:0;margin:0}
+.game-board-panel #task .workflow-card .confidence-block label{font-weight:500}
+.game-board-panel #task .workflow-card .confidence-block input{margin:9px 0 5px}
+.game-board-panel #task .workflow-card .decision-reason{margin:0}
+.game-board-panel #task .workflow-card .decision-reason select{max-width:100%;width:100%}.game-board-panel #task .workflow-card .subsection-block{margin-top:10px;padding-top:10px;border-top:1px solid var(--line)}.game-board-panel #task .workflow-card .subsection-block h4{margin:0 0 7px;font-size:13px}
+.game-board-panel #task .workflow-card .submit-word{margin:11px 0 0}
+.game-board-panel #task .workflow-card .submit-word button{width:100%;min-width:0}.game-board-panel #task .step-confirm{margin:0;border-top:1px solid var(--line);padding-top:10px}.game-board-panel #task .step-confirm button{width:100%;font-weight:800}.game-board-panel #task .step-confirm button:disabled{opacity:.48;cursor:not-allowed}
+@media(max-width:550px){.workflow-overview .task-ribbon{grid-template-columns:repeat(3,minmax(0,1fr))}.workflow-overview .task-ribbon span{text-align:left;padding:5px 9px}}
+
+/* External-evidence provenance: organizational origin stays neutral; speaker carries party identity. */
+.sourced-evidence{padding:10px 12px}
+.evidence-source-line{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+.evidence-source-label{font-size:12px;font-weight:800;letter-spacing:.01em;color:var(--text);border:1px solid var(--line);padding:4px 7px;border-radius:5px;background:var(--panel)}
+.evidence-presenter{font-size:12px;font-weight:750;padding:4px 7px;border:1px solid;border-radius:5px}
+.evidence-blue{background:#153b65;color:#d4ebff;border-color:#5498da}
+.evidence-red{background:#582633;color:#ffdee1;border-color:#d87283}
+.evidence-body{font-size:14px;margin-bottom:7px}
+body.light .evidence-blue{background:#d9eafa;color:#0a457e;border-color:#0b5598}
+body.light .evidence-red{background:#f9e0e5;color:#802033;border-color:#aa334a}
+
+/* UX polish: matching task blocks, predictable vertical rhythm across all 7 stages */
+.game-board-panel #task .initial-word-panel{
+  display:flex!important; flex-direction:column; gap:12px!important;
+  width:100%; min-width:0; margin:0!important; padding:0!important;
+}
+.game-board-panel #task .workflow-overview{
+  border-radius:10px!important; padding:8px 10px!important; margin:0!important;
+}
+.game-board-panel #task .workflow-overview .overview-title{
+  margin:0 0 6px; line-height:1.3;
+}
+.game-board-panel #task .workflow-overview .task-ribbon{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;align-items:stretch}
+.game-board-panel #task .workflow-overview .task-ribbon span{
+  display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:7px 6px;line-height:1.3;min-width:0;min-height:35px;
+  text-align:center;overflow-wrap:anywhere;
+}
+.game-board-panel #task .workflow-overview .task-ribbon b{margin:0;flex-shrink:0;font-size:12px}
+.game-board-panel #task .workflow-card{
+  display:block;width:100%;min-width:0;margin:0!important;
+  padding:13px 14px!important;border:1px solid var(--line);
+  border-radius:10px;background:var(--panel);
+}
+.game-board-panel #task .workflow-card .workflow-title{
+  display:flex;align-items:center;gap:8px;margin:0 0 11px;
+  line-height:1.35;min-height:20px;font-size:13px;
+}
+.game-board-panel #task .workflow-card .workflow-title .workflow-letter{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:21px;height:21px;flex:0 0 21px;
+  border-radius:5px;background:var(--callout);font-size:13px;
+}
+.game-board-panel #task .workflow-card .workflow-title small{margin-left:auto;white-space:nowrap}
+.game-board-panel #task .workflow-card p{margin:6px 0 10px;line-height:1.45}
+.game-board-panel #task .workflow-card .callout,
+.game-board-panel #task .workflow-card .evidence{margin:7px 0;padding:10px 11px}
+.game-board-panel #task .workflow-card .decision-reason{margin:9px 0 0}
+.game-board-panel #task .workflow-card .decision-reason:first-of-type{margin-top:0}
+.game-board-panel #task .workflow-card .decision-reason label{display:block;margin:0 0 5px}
+.game-board-panel #task .workflow-card select{width:100%;max-width:100%;min-height:38px}
+.game-board-panel #task .workflow-card .choices{gap:8px;margin:0}
+.game-board-panel #task .workflow-card .choice{min-height:43px;line-height:1.3}
+.game-board-panel #task .workflow-card .row{gap:8px;align-items:stretch}
+.game-board-panel #task .workflow-card .row button{flex:1 1 130px;min-height:40px}
+.game-board-panel #task .workflow-card .confidence-block input[type="range"]{display:block;width:100%;margin:9px 0 5px}
+.game-board-panel #task .workflow-card .subsection-block{margin:12px 0 0;padding:11px 0 0}
+.game-board-panel #task .workflow-card .subsection-block h4{margin:0 0 9px}
+.game-board-panel #task .workflow-card .scoreboard{max-width:100%;overflow-x:auto}
+.game-board-panel #task .step-confirm{margin:2px 0 0!important;padding:12px 0 0!important;border-top:1px solid var(--line)}
+.game-board-panel #task .step-confirm button{width:100%;min-height:44px;border-radius:8px}
+.game-board-panel #task .current-step-instruction{margin-bottom:11px}
+@media(max-width:580px){
+  .game-board-panel #task .initial-word-panel{gap:9px!important}
+  .game-board-panel #task .workflow-card{padding:11px!important}
+  .game-board-panel #task .workflow-overview .task-ribbon{gap:4px}
+  .game-board-panel #task .workflow-overview .task-ribbon span{padding:5px 4px;font-size:10px;min-height:40px}
+  .game-board-panel #task .workflow-card .choices{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
+}
+
+/* Brief inter-round reflection and prospective transfer: no information about the next answer is supplied. */
+.learning-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:7px;margin:9px 0 12px}.learning-options button{padding:9px 8px;min-height:43px;text-align:left;font-size:12px}.learning-label{display:block;font-size:12px;font-weight:700;margin:7px 0 5px}.learning-transfer{margin-top:11px;padding:13px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}.learning-transfer textarea,.workflow-card textarea{width:100%;max-height:100px;min-height:55px;resize:vertical}.step-confirm button:disabled{opacity:.45;cursor:not-allowed}
+.restart-choices{display:flex;flex-direction:column;gap:8px;margin:10px 0}.restart-choices button{width:100%;min-height:40px}.danger-button{background:#8e2434!important;color:#fff!important;border:1px solid #dc6572!important}.danger-button:hover{background:#ad3044!important}
+
+/* Pilot mobile portrait + landscape responsive viewing */
+.pilot-mobile-switch{display:none;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:10px;border:1px solid var(--line);background:var(--panel);border-radius:10px}
+.pilot-mobile-switch span{font-size:12px;font-weight:700;color:var(--muted);margin-right:auto}
+.pilot-mobile-switch button{font-size:12px;min-height:44px;padding:8px 12px;flex:1 1 auto}
+.pilot-mobile-switch button[aria-pressed="true"]{background:var(--gold);color:#15231d;font-weight:800;border-color:var(--gold)}
+@media(max-width:1050px){
+ .pilot-mobile-switch{display:flex}
+ body.pilot-view-game .assembly-column{display:none!important}
+ body.pilot-view-assembly .game-column{display:none!important}
+ body.pilot-view-game .layout,body.pilot-view-assembly .layout{grid-template-columns:minmax(0,1fr)!important}
+ .game-column{position:static!important}
+ .workspace-tabs{position:sticky;top:0;z-index:8}
+}
+@media(max-width:680px){
+ header{padding:11px 12px}
+ header nav{display:flex;flex-wrap:wrap;gap:6px}
+ h1{font-size:23px}
+ main{padding:7px!important}
+ .panel{padding:9px!important;border-radius:11px}
+ .pilot-mobile-switch{padding:7px;gap:5px}
+ .pilot-mobile-switch span{width:100%;text-align:center}
+ .game-board-panel #task{display:flex!important;flex-direction:column!important;gap:10px!important}
+ .game-board-panel #task > .step-navigation{position:static!important;order:-2!important;display:block!important;width:100%!important;grid-column:auto!important;grid-row:auto!important}
+ .game-board-panel #task .step-tracker .step-list{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3px!important}
+ .game-board-panel #task .step-token{font-size:10px!important;min-width:0!important;padding:5px 4px!important;overflow-wrap:anywhere}
+ .round-reference .ref-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .game-board-panel #task > :not(.step-navigation){grid-column:auto!important;width:100%!important;min-width:0}
+ .game-board-panel #task .workflow-overview .task-ribbon{grid-template-columns:1fr!important}
+ .game-board-panel #task .workflow-overview .task-ribbon span{justify-content:flex-start!important;text-align:left!important;min-height:30px!important}
+ .game-board-panel #task .workflow-card{padding:10px!important}
+ .game-board-panel #task .workflow-card .choices{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .game-board-panel #task .step-confirm button{min-height:48px}
+ .felt{border-width:3px;gap:3px!important}
+ .workspace-tabs{gap:3px}
+ .workspace-tabs button{padding:7px 2px;font-size:10px}
+ .row button{flex:1 1 auto}
+ #task select,#task textarea{max-width:100%;width:100%}
+}
+@media(max-width:920px) and (orientation:landscape){
+ .pilot-mobile-switch span{margin-right:8px;width:auto}
+ .pilot-mobile-switch button{flex:0 1 auto}
+ .game-board-panel #task .workflow-overview .task-ribbon{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+ .game-board-panel #task .step-tracker .step-list{grid-template-columns:repeat(7,minmax(0,1fr))!important}
+ .game-board-panel #task .workflow-card .choices{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+</style><style>
+.experiment-archive-info{border:1px solid var(--line);background:var(--callout);border-radius:9px;padding:11px 12px;margin:12px 0;font-size:13px}
+.archive-summary{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.archive-summary span{display:inline-block;border:1px solid var(--line);border-radius:5px;padding:4px 7px;font-size:11px;background:var(--panel)}
+.archive-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 12px}
+.archive-actions small{font-size:11px}
+.archive-confirm{border:2px solid #b75e60;padding:12px;margin:10px 0;border-radius:8px}
+.experiment-tag{font-size:11px;letter-spacing:.03em;margin-bottom:4px;color:var(--text);font-weight:700}
+
+/* Compact payoff forecast placed immediately beneath each final-vote choice. */
+.vote-comparison-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:stretch}
+.vote-option{display:flex;flex-direction:column;min-width:0;gap:0}
+.vote-option>button{width:100%;min-height:43px;font-weight:800}
+.vote-gain-estimate{flex:1;border:1px solid var(--line);border-top:0;background:var(--callout);padding:9px 8px;min-width:0}
+.vote-gain-primary{display:flex;flex-direction:column;gap:1px;margin-bottom:7px;line-height:1.2}
+.vote-gain-primary strong{font-size:22px;color:var(--gold)}
+.vote-gain-primary span{font-size:10px;color:var(--muted)}
+.vote-gain-details{display:flex;flex-direction:column;gap:3px;font-size:11px;line-height:1.45}
+.vote-gain-details b{color:var(--text)}
+.vote-gain-disclaimer{display:block;margin-top:8px;font-size:10px;line-height:1.45}
+@media(max-width:430px){.vote-gain-estimate{padding:7px 5px}.vote-gain-primary strong{font-size:18px}.vote-gain-details{font-size:10px}}
+</style>
+</head><body>
+<div class="creator-banner">Game created by Miguel S. Zanella (Prospective experiment)</div>
+<header><div><div class="tag">Behavioral pilot · 7 deliberative sessions</div><h1>Deliberative Assembly</h1><small>Collective learning under competing incentives</small></div><nav><button id="navPlay" class="active" onclick="tab('play')">Assembly & Play</button> <button id="navGuide" onclick="tab('guide')">Game Handbook</button> <button id="themeToggle" onclick="toggleTheme()" aria-label="Toggle light or dark theme">☀ Light mode</button></nav></header>
+<main><div id="guide" class="panel hidden"><h2>Game Handbook</h2>
+<p class="muted">Seven rounds · Ten participants · Three scoreboards · Fictional policy scenarios</p>
+<details><summary>Research question · Continuous Inductive Learning</summary><p><b>Research question:</b> What is the effect of continuous inductive learning on collective reasoning and decision-making among randomly assigned participants in controlled, scheduled deliberative sessions, where reasoning capacities, communication opportunities, and power relationships vary under conditions of time pressure and uncertainty?</p><p>Continuous Inductive Learning denotes the ongoing presentation, exchange, evaluation, and potential use of relevant inductive information during repeated deliberative sessions. It does not mean judgments must improve monotonically in every round.</p><p>The proposed causal comparison is between randomly assigned independent assemblies in a low-information control and a high-information treatment; this interactive assisted pilot alternates conditions for demonstration and records behavioral choices.</p></details>
+<details open><summary>1 · Objective and competition</summary>
+<ul><li><b>Personal:</b> Compete for the highest individual score. A legislator's displayed total combines personal and presidential points.</li>
+<li><b>Party:</b> Help Blue or Red earn points through sponsored legislation and bipartisan passage.</li>
+<li><b>President:</b> Earn presidential points by passing bills and assembling bipartisan support.</li>
+<li><b>Duration:</b> The game ends after seven rounds. Scores are cumulative; no automatic early-victory trigger is implemented.</li>
+<li><b>Other players:</b> You control P1; P2–P10 are simulated and make probabilistic decisions.</li></ul></details>
+<details><summary>2 · Game setup and institutional roles</summary><ul>
+<li><b>Parties:</b> Five Blue and five Red seats; affiliation stays fixed for the game.</li>
+<li><b>Incentives:</b> Each player is assigned a fixed Collective, Party, or Individual motivation.</li>
+<li><b>President:</b> A randomly ordered rotation assigns a different President for each of the seven rounds. The President chooses the final policy word and may issue a directive or call a briefing.</li>
+<li><b>Caucus leaders:</b> One eligible Blue and one eligible Red player are randomly appointed each round. They can direct their caucus and call for review.</li>
+<li><b>Institutional Expert:</b> One non-President is selected each round, favoring players who have served fewer times. Experts do not vote. P1 may act as Expert at most once per game.</li>
+<li><b>Bill sponsor:</b> Blue, Red, or Joint; the seven-round sequence contains two of each and one extra randomized sponsor.</li>
+<li><b>Institutional friction:</b> Caucus Pressure, Expert Challenge, Presidential Discretion, or Low Friction is randomized by round.</li></ul></details>
+<details><summary>3 · Round sequence</summary><ol>
+<li><b>Initial word:</b> Choose one of three proposed policy words and record confidence. Other players choose independently.</li>
+<li><b>Private information:</b> If assigned a private card, review its fictional source (Executive, Judicial, Comparative Policy, University behavioral research, or Legislative evaluation), and explicitly choose to reveal or withhold. Participants without a card skip disclosure.</li>
+<li><b>Deliberation:</b> Choose an argument and target one legislator using evidence, compromise, or coalition-building. Persuasion can succeed or fail.</li>
+<li><b>Revised word:</b> Review revealed information and any external evidence; keep or change your preferred word and confidence.</li>
+<li><b>Presidential selection:</b> The President selects the bill's final word. The assembly's word preferences and final legislative wording are not the same thing.</li>
+<li><b>Institutional briefing:</b> After the President selects the complete bill wording, leaders may request a briefing before the vote. Players may attend at no attendance cost or decline for −2 personal points. The action is recorded, and declining does not prevent voting.</li>
+<li><b>Consequence preview and vote:</b> Compare simulated YES/NO outcomes and expected scoring before committing. Nine eligible legislators can vote; five YES votes are required to pass.</li>
+<li><b>Feedback and learning reflection:</b> Review outcomes; select one or more lessons with an optional note. Midway through the next round, after deliberation and before revising the word, report whether you applied a lesson from the previous round. These self-reports are not proof of actual learning.</li></ol>
+<p class="muted"><b>Corrections:</b> Back One Stage can reopen a previous decision before the next round. Individual votes remain hidden until the result stage.</p></details>
+<details><summary>4 · Personal scoring</summary><ul>
+<li><b>Evidence alignment:</b> +4 when your revised word matches the fictional evidence-supported option. Experts can earn these points too.</li>
+<li><b>Legislative outcome:</b> +3 if your YES/NO vote matches whether the bill passed or failed.</li>
+<li><b>Policy outcome:</b> +4 for voting YES on an evidence-aligned bill that passes, or NO on a non-aligned bill that fails.</li>
+<li><b>Bipartisan cooperation:</b> +2 for voting YES when the bill passes with support from both parties.</li>
+<li><b>Sponsor-team success:</b> +2 for voting YES on a passed bill sponsored by your own party or jointly sponsored. A NO vote on a failed bill does not earn this bonus.</li>
+<li><b>Caucus loyalty:</b> During Caucus Pressure, non-leaders gain +2 for following their party's directive or lose 4 for defying it.</li>
+<li><b>Presidential loyalty:</b> During Presidential Discretion, non-Presidents gain +2 for following the President's directive or lose 3 for defying it.</li>
+<li><b>Expert:</b> Does not cast YES/NO votes, so earns no vote-based or directive points; can still earn evidence-alignment points.</li>
+<li><b>Personal total:</b> Can fall below zero. Deliberation attempts do not currently award separate persuasion points.</li></ul></details>
+<details><summary>5 · Party and presidential scoring</summary><ul>
+<li><b>Blue or Red sponsorship:</b> +10 party points to that sponsoring party if its bill passes.</li>
+<li><b>Joint sponsorship:</b> +5 party points to each party if the bill passes.</li>
+<li><b>Bipartisan passage:</b> +10 additional party points to each party when at least one YES vote comes from both parties.</li>
+<li><b>President — passage:</b> +10 presidential points when the bill passes.</li>
+<li><b>President — bipartisanship:</b> +10 more presidential points for bipartisan passage.</li>
+<li><b>Failed bill:</b> No sponsoring-party or presidential passage bonus.</li></ul></details>
+<details><summary>6 · Evidence, pressure, and vote simulation</summary><ul>
+<li><b>Information:</b> Evidence is randomized within the game-assigned control or treatment condition. Private cards come from five fictional source families: Executive assessments, decided Judicial cases, Comparative Policy studies, University behavioral experiments, and Legislative impact evaluations. Cards vary in relevance and may support, challenge, or complicate the proposed policy. Disclosing a private card remains optional.</li>
+<li><b>Two seven-round experimental conditions:</b> <strong>Experiment 1 — Low-information control</strong> has six low-information rounds (no added external evidence) and one randomly placed medium-information round (one additional statement). <strong>Experiment 2 — High-information treatment</strong> has six high-information rounds (two statements) and one randomly placed medium-information round. The rare medium round is retained in each condition. Later games alternate low/high by experiment number. Policy topics remain identical in their seven-case pool; their order and institutional roles are randomized. The condition affects evidence availability, not whether players must accept or share it.</li><li><b>Private evidence:</b> The low-information control distributes only two private evidence cards per participant across seven rounds; the high-information treatment distributes five. Source families are randomized and evidence can be withheld. This makes availability different at both institutional and personal levels.</li>
+<li><b>Conditions:</b> Communication (Open/Restricted), time (Normal/Short), and presidential authority (Consultative/Strong) vary randomly.</li>
+<li><b>Institutional review:</b> A requested caucus or presidential briefing pauses voting until you attend and finish it or decline it for −2 personal points. YES/NO requests are shown only with the final bill wording at Step 6.</li>
+<li><b>Vote forecast:</b> The YES/NO panel estimates passage chances and conditional point consequences from the bot voting model. It does not reveal actual votes or guarantee the displayed result.</li>
+<li><b>Policy benchmark:</b> A pre-coded word is used to approximate decision quality in each fictional scenario; it is not a judgment about real-world policy.</li></ul></details>
+<details><summary>7 · Table, records, and exports</summary><ul>
+<li><b>Assembly table:</b> See each player’s institutional role, initial and revised words, changes, whether their private information was shared, and the source of publicly shared cards. Votes appear when voting closes.</li>
+<li><b>Decision trail:</b> The event log records submitted judgments, sharing, argument and persuasion choices, leadership directives, revisions, votes, and point changes.</li>
+<li><b>Scores:</b> Personal, presidential, and party totals accumulate across rounds. Individual totals are shown after each round.</li>
+<li><b>Exports:</b> Download round summaries, player-round records, event-level logs, or the combined research dataset. Use View / Copy Data if the preview blocks downloads.</li>
+<li><b>Corrections:</b> Back One Stage replaces subsequent simulated choices from the reverted stage; it does not preserve discarded branches as observations.</li></ul></details>
+<details><summary>8 · Research limitations</summary><ul>
+<li><b>Simulation:</b> The nine automated legislators help test how a proposed randomized control/treatment design operates. In the future research experiment, use the same assignments and behavioral measures with the intended participants.</li>
+<li><b>Inference:</b> Conditions are randomized, but seven linked rounds vary in policy content, sequence, and learning history; within-game contrasts are descriptive.</li>
+<li><b>Behavior:</b> Changing one's mind is not automatically good reasoning. Maintaining an evidence-supported position can also be appropriate.</li>
+<li><b>Future human testing:</b> Would need separate participant consent and data procedures.</li></ul></details></div>
+
+<div id="play"><div id="setup" class="panel"><div class="tag">New experiment · no assignments yet</div><h2>Begin the learning experiment</h2><p>Ten neutral seats are waiting. Parties, incentive profiles, the presidential order, and institutional conditions will be assigned <b>only after you start</b>. <b>Experiment 1 is the low-information control; Experiment 2 is the high-information treatment.</b> Subsequent games alternate these conditions. When seven rounds are complete, use Begin Experiment 2 to start the high-information treatment automatically; Experiment 1 is retained in the same browser archive and both appear in the combined CSV.</p><p class="muted">You control P1. The other nine participants are simulated. Each game has seven rounds and downloadable research logs.</p><p id="nextExperimentCondition" class="tag" aria-live="polite"></p><button class="primary" onclick="begin()">Begin New Game</button></div>
+<div id="workspace" class="hidden"><div class="pilot-mobile-switch" aria-label="Mobile game display">
+ <span>Mobile screen view · portrait / landscape</span>
+ <button type="button" data-pilot-view="game" aria-pressed="true" onclick="setPilotView('game')">Game board</button>
+ <button type="button" data-pilot-view="assembly" aria-pressed="false" onclick="setPilotView('assembly')">Assembly table</button>
+ <button type="button" data-pilot-view="both" aria-pressed="false" onclick="setPilotView('both')">Both</button>
+</div><div class="layout"><div class="assembly-column"><div class="panel assembly-table-panel"><div class="row" style="justify-content:space-between"><div><span class="tag" id="roundTitle"></span><h2>Assembly table</h2></div><div id="self" class="muted"></div></div><div class="progress" id="progress"></div><div class="felt"><div id="blue"></div><div class="center"><strong>THE ASSEMBLY</strong><p id="feltCenter"></p><small>Blue · left / Red · right</small></div><div id="red"></div></div></div><div class="panel assembly-log-panel"><h3>Deliberation log</h3><div id="log"></div></div></div><aside class="game-column"><div class="workspace-tabs" role="tablist" aria-label="Game workspace"><button type="button" id="workTabBoard" class="active" role="tab" aria-selected="true" onclick="workspaceTab('board')">1 · Game board</button><button type="button" id="workTabDashboard" role="tab" aria-selected="false" onclick="workspaceTab('dashboard')">2 · Live dashboard</button><button type="button" id="workTabData" role="tab" aria-selected="false" onclick="workspaceTab('data')">3 · Download data</button></div><section class="work-pane hidden" data-work-pane="dashboard"><div class="panel"><div class="row" style="justify-content:space-between"><h3>Research dashboard</h3><span class="tag">Live</span></div><div id="metrics"></div></div><div class="panel"><h3>Round history</h3><div id="history"></div></div></section><section class="work-pane" data-work-pane="board"><div class="panel game-board-panel"><div class="game-board-heading"><div><span class="tag">Your turn · one task at a time</span><h2>Game board</h2></div><span id="stepCounter" class="step-counter" aria-live="polite">Step 0/7</span></div><div id="task"></div></div></section><section class="work-pane hidden" data-work-pane="data"><div class="panel"><h3>Research exports</h3><p class="muted">Choose datasets or download the complete research package.</p>
+<div id="experimentArchiveInfo" class="experiment-archive-info" aria-live="polite"></div>
+<div class="archive-actions"><button id="clearArchiveButton" onclick="requestClearArchive()" type="button">Clear saved experiment history</button><small>Clears archived games only; it does not restart the active game.</small></div>
+<div id="clearArchiveConfirm" class="hidden archive-confirm"><b>Delete all archived experiments?</b><p>This cannot be undone. Export your combined CSV before clearing the history. The game currently in progress will not be deleted.</p><div class="row"><button onclick="clearExperimentArchive()" type="button">Yes, delete saved history</button><button onclick="cancelClearArchive()" type="button">Cancel</button></div></div>
+<div class="export-list">
+<label><input type="checkbox" class="export-check" value="players" checked> <span><b>Player-round data</b><small> · Every player’s choices, confidence, evidence sharing, reasons and votes</small></span></label>
+<label><input type="checkbox" class="export-check" value="events" checked> <span><b>Event log</b><small> · Timestamped-by-stage actions and recorded decisions</small></span></label>
+<label><input type="checkbox" class="export-check" value="rounds" checked> <span><b>Round summaries</b><small> · Bills, institutional conditions, outcomes and evidence alignment</small></span></label>
+<label><input type="checkbox" class="export-check" value="readme" checked> <span><b>Data guide</b><small> · Dataset descriptions, interpretation notes and limitations</small></span></label>
+</div><div class="export-actions"><button class="primary" onclick="exportBundle(true)">Download all · ZIP</button><button onclick="exportBundle(false)">Selected · ZIP</button><button class="primary" onclick="exportCombinedCSV(true)">Download all · CSV</button><button onclick="exportCombinedCSV(false)">Selected · CSV</button></div><p class="muted" style="font-size:12px;margin-top:10px">ZIP contains separate files for each dataset. CSV combines selected sections into one table, with a <b>dataset</b> column.</p>
+<p class="muted" style="margin-top:10px">Downloads include archived experiments plus completed rounds in the current game, each labeled by experiment. Partial experiments are identifiable by their round count.</p><div style="margin-top:10px"><button onclick="showDataPreview()">View / copy data (download fallback)</button><p class="muted" style="font-size:12px">If this preview blocks downloads, use the data viewer to copy the CSV. You can also open the HTML in a normal browser.</p><div id="exportFeedback" role="status" aria-live="polite" style="font-size:12px;margin:8px 0"></div><div id="dataPreview" class="hidden" style="margin-top:10px"><p><b>Copyable CSV — selected datasets</b></p><textarea id="dataPreviewText" readonly spellcheck="false" style="width:100%;min-height:190px;box-sizing:border-box;background:var(--panel);color:var(--text);border:1px solid var(--line);font:11px monospace;padding:8px"></textarea><div class="row"><button class="primary" onclick="copyPreview()">Copy CSV</button><button onclick="$('dataPreview').classList.add('hidden')">Close viewer</button></div></div></div><hr style="border-color:var(--line)"><button class="primary" onclick="requestReset()">↻ Restart Game</button><p class="muted" style="font-size:12px">Restarts the game while preserving previously completed rounds in the experiment archive.</p><div id="resetConfirm" class="hidden" style="border:2px solid var(--gold);padding:12px;margin-top:10px;border-radius:9px"><b>Restart game — what happens to your data?</b><p class="muted">Choose whether to preserve or permanently delete saved research records.</p><div class="restart-choices"><button class="primary" type="button" onclick="reset()">Save experiments &amp; restart</button><button class="danger-button" type="button" onclick="showDeleteAllConfirm()">Delete ALL experiments &amp; restart</button><button type="button" onclick="cancelReset()">Cancel</button></div><p class="muted" style="font-size:11px">Deleting clears the active game, archived experiments, recorded events, and experiment numbering stored in this browser. It does not delete CSV/ZIP files you have already downloaded. Deletion requires another confirmation.</p><div id="deleteAllConfirm" class="hidden" style="padding:12px;margin-top:12px;border:2px solid #bd3444;background:var(--callout)"><strong>Confirm permanent deletion</strong><p>All experiment history stored in this browser and the current game will be erased. This cannot be undone.</p><div class="row"><button type="button" class="danger-button" onclick="resetAndDeleteAll()">Yes — delete all records and restart</button><button type="button" onclick="hideDeleteAllConfirm()">No, keep my data</button></div></div></div></div></section></aside></div></div></div></main>
+<script>
+const CASES=[
+{title:"Public Health Response",prompt:"The assembly should prioritize ___ access to emergency care.",opts:["universal","targeted","rapid"],best:1,evidence:["A fictional needs assessment finds that 70% of unmet care occurs in three high-risk districts.","A fictional budget analysis finds targeted deployment covers more untreated patients than either alternative."]},
+{title:"Housing Assistance",prompt:"The city should adopt ___ housing support.",opts:["universal","means-tested","temporary"],best:1,evidence:["A fictional survey identifies concentrated housing instability among low-income households.","A fictional program evaluation suggests means-tested support reaches the greatest number of households at risk."]},
+{title:"Water Infrastructure",prompt:"Public funds should support ___ water repairs.",opts:["preventive","emergency","distributed"],best:0,evidence:["Fictional maintenance records show recurring failures preceded by detectable warning signs.","A fictional engineering review projects fewer future outages under preventive maintenance."]},
+{title:"School Nutrition",prompt:"The district should provide ___ school meal support.",opts:["universal","targeted","seasonal"],best:0,evidence:["A fictional survey reports that application requirements exclude some eligible families.","A fictional implementation pilot finds universal provision increases uptake while reducing administrative delays."]},
+{title:"Flood Preparedness",prompt:"The region should fund ___ flood protection.",opts:["centralized","community-based","reactive"],best:1,evidence:["Fictional flood maps show risks differ substantially between neighborhoods.","A fictional local preparedness pilot reports faster response where community networks are trained."]},
+{title:"Transit Safety",prompt:"The agency should adopt ___ transit safety measures.",opts:["uniform","risk-based","voluntary"],best:1,evidence:["Fictional incident logs show that most incidents cluster on a small subset of routes.","A fictional deployment analysis finds risk-based patrols address more incidents per hour."]},
+{title:"Energy Reliability",prompt:"The council should invest in ___ energy resilience.",opts:["centralized","diversified","short-term"],best:1,evidence:["Fictional outage records show single-point failures affected several districts.","A fictional simulation finds diversified backup capacity reduces disruption during major failures."]}
+];
+const PRIVATE_SOURCE_TYPES=['Executive policy assessment','Judicial case decision','Comparative policy study','University behavioral experiment','Legislative impact evaluation'];
+function makeEvidenceSchedule(){
+ return Array.from({length:7},()=>null);
+}
+function evidenceScheduleForPlayer(){
+ const types=shuffle([...PRIVATE_SOURCE_TYPES]);
+ const slots=shuffle([...types,null,null]);
+ return slots;
+}
+function evidenceDetails(source,rel,caseData){
+ const best=caseData.opts[caseData.best],other=caseData.opts.find(v=>v!==best);
+ const high=rel==='high',low=rel==='low';
+ if(source==='Executive policy assessment'){
+  const samples=high?[
+   `Fictional ministry implementation report: pilot outcomes favor "${best}" for ${caseData.title.toLowerCase()}.`,
+   `Fictional executive budget review: the cost-effectiveness assessment supports "${best}" under the stated policy constraints.`
+  ]:low?[
+   `Fictional executive audit: agencies report implementation delays; the findings do not establish which wording is most effective.`,
+   `Fictional cabinet briefing: projected costs vary across agencies, and the available estimates remain inconclusive.`
+  ]:[
+   `Fictional executive policy memo: implementation appears feasible for "${best}", subject to budget assumptions.`,
+   `Fictional departmental evaluation: early results suggest "${best}", but agency estimates vary.`
+  ];
+  return {source_type:'Executive',status:'Policy assessment',text:pick(samples)};
+ }
+ if(source==='University behavioral experiment'){
+  const samples=high?[
+   `Fictional university randomized field experiment: participants offered a ${caseData.title.toLowerCase()} policy closest to "${best}" showed improved uptake relative to the comparison group; costs were not measured.`,
+   `Fictional university preregistered behavioral trial: decision-makers receiving feedback about outcomes selected "${best}" more often; the study did not test long-term effects.`
+  ]:low?[
+   `Fictional university laboratory experiment: participants preferred "${other}" when facing personal reward incentives, but the study measured hypothetical choices, not real policy outcomes.`,
+   `Fictional university replication study: results differed across student samples; the evidence cannot distinguish "${best}" from alternatives.`
+  ]:[
+   `Fictional university behavioral study: a treatment using wording closest to "${best}" improved cooperation in one sample but had no measurable effect in another.`,
+   `Fictional university survey experiment: respondents reacted differently to "${other}" depending on partisan framing, limiting the usefulness of reported preferences.`
+  ];
+  return {source_type:'University research',status:'Behavioral experiment · simulated',text:pick(samples)};
+ }
+ if(source==='Legislative impact evaluation'){
+  const samples=high?[
+   `Fictional post-enactment impact evaluation: a comparable enacted law with provisions closest to "${best}" reduced the targeted harm, but administrative costs increased.`,
+   `Fictional legislative oversight report: measured consequences after implementation favored "${best}", while identifying enforcement risks.`
+  ]:low?[
+   `Fictional legal impact study: after a comparable law passed, compliance costs rose, and the evaluation could not attribute social outcomes to the law alone.`,
+   `Fictional parliamentary follow-up: evidence on an enacted law was inconclusive because rollout coincided with broader economic changes.`
+  ]:[
+   `Fictional evaluation of an enacted law: outcomes associated with "${best}" improved in urban areas but not rural areas; legal implementation varied.`,
+   `Fictional legislative impact analysis: a reform resembling "${other}" increased short-term participation but produced unexpected administrative burdens.`
+  ];
+  return {source_type:'Legal / policy impact',status:'Evaluation of law consequences · simulated',text:pick(samples)};
+ }
+ if(source==='Judicial case decision'){
+  const samples=high?[
+   `Fictional appellate decision: the court ruled on a similar ${caseData.title.toLowerCase()} measure and upheld safeguards most consistent with "${best}".`,
+   `Fictional final judgment: a completed constitutional review found that a policy using "${best}" was compatible with procedural protections.`
+  ]:low?[
+   `Fictional dissenting opinion from a decided case: one judge questioned the legal assumptions behind "${other}", without changing the majority ruling.`,
+   `Fictional trial-court decision: the judgment resolved a narrow procedural issue but offers little guidance on the competing policy wordings.`
+  ]:[
+   `Fictional judicial precedent: the court resolved a related case and discussed safeguards associated with "${best}", while leaving implementation to legislators.`,
+   `Fictional judicial case digest: a decided appeal addresses the same legal concern, but its applicability to this bill is contested.`
+  ];
+  return {source_type:'Judicial',status:'Decided case',text:pick(samples)};
+ }
+ const samples=high?[
+  `Fictional cross-country comparative study: a similarly situated country reported stronger results after using a model consistent with "${best}".`,
+  `Fictional comparative-policy evaluation: a comparable foreign jurisdiction achieved better outcomes with a design closest to "${best}".`
+ ]:low?[
+  `Fictional comparison with another country: political and administrative differences make its experience difficult to transfer to this assembly.`,
+  `Fictional international case review: different implementation contexts produced conflicting outcomes, without supporting a single option.`
+ ]:[
+  `Fictional comparative-policy brief: another country's approach offers qualified support for "${best}", but implementation contexts differ.`,
+  `Fictional international policy study: a comparable jurisdiction saw promising results under "${best}", although the sample was small.`
+ ];
+ return {source_type:'Comparative',status:'Cross-country case',text:pick(samples)};
+}
+const N=10;const $=id=>document.getElementById(id);const shuffle=a=>[...a].sort(()=>Math.random()-.5);const rnd=n=>Math.floor(Math.random()*n);const pick=a=>a[rnd(a.length)];const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let s=null;
+function tab(t){$('guide').classList.toggle('hidden',t!=='guide');$('play').classList.toggle('hidden',t!=='play');$('navPlay').classList.toggle('active',t==='play');$('navGuide').classList.toggle('active',t==='guide')}
+// Multi-experiment archive; rows remain long-format with an experiment identifier.
+const EXP_ARCHIVE_KEY='assemblyResearchExperimentArchiveV1';
+const EXP_COUNT_KEY='assemblyResearchExperimentCounterV1';
+let experimentArchive=[];
+let experimentCounter=0;
+function loadExperimentArchive(){
+ try{const stored=JSON.parse(localStorage.getItem(EXP_ARCHIVE_KEY)||'[]');experimentArchive=Array.isArray(stored)?stored.filter(x=>x&&x.rounds&&x.events):[];experimentCounter=Number(localStorage.getItem(EXP_COUNT_KEY)||0)||0;experimentCounter=Math.max(experimentCounter,...experimentArchive.map(x=>Number(x.experimentNumber||0)),0)}catch(e){experimentArchive=[];experimentCounter=0}
+}
+function saveExperimentArchive(){
+ try{localStorage.setItem(EXP_ARCHIVE_KEY,JSON.stringify(experimentArchive));localStorage.setItem(EXP_COUNT_KEY,String(experimentCounter));return true}
+ catch(e){exportStatus('Local browser storage is full or unavailable. Export your combined CSV now; the archive may not persist across reloads.');return false}
+}
+function archiveCurrentExperiment(){
+ if(!s?.started||!s.rounds?.length)return false;
+ if(!s.experimentNumber){experimentCounter++;s.experimentNumber=experimentCounter}
+ else experimentCounter=Math.max(experimentCounter,Number(s.experimentNumber));
+ const snapshot=JSON.parse(JSON.stringify({...s,undoStack:[]}));
+ const i=experimentArchive.findIndex(x=>x.id===snapshot.id);
+ if(i>=0)experimentArchive[i]=snapshot;else experimentArchive.push(snapshot);
+ saveExperimentArchive();return true;
+}
+function experimentLabel(state){return 'Experiment '+Number(state.experimentNumber||1)}
+function experimentsForExport(){
+ const archived=[...experimentArchive].sort((a,b)=>Number(a.experimentNumber||0)-Number(b.experimentNumber||0));
+ if(s?.started && s.rounds?.length){
+  const idx=archived.findIndex(x=>x.id===s.id);
+  if(idx>=0)archived[idx]=s;else archived.push(s);
+ }
+ return archived;
+}
+function archivedDatasetRows(state,type){
+ const previous=s;let result=[];
+ try{s=state;result=type==='players'?playerRows():type==='events'?state.events:roundRows()}finally{s=previous}
+ return result;
+}
+function archiveInfo(){
+ const next=$('nextExperimentCondition');if(next)next.textContent='Next: Experiment '+(experimentCounter+1)+' — '+(experimentCounter%2===0?'LOW-information control':'HIGH-information treatment');
+ const el=$('experimentArchiveInfo');if(!el)return;
+ const games=experimentsForExport();
+ el.innerHTML=`<strong>Saved experiment records: ${games.length}</strong><div class="archive-summary">${games.length?games.map(x=>`<span>${experimentLabel(x)} · ${x.experimentalCondition==='treatment_high'?'Treatment (high info)':x.experimentalCondition==='control_low'?'Control (low info)':'Mixed (older version)'} · ${x.rounds.length}/7 rounds${x.phase==='complete'?' · Complete':' · Partial'}</span>`).join(''):'No saved experiments yet. Complete a round to begin recording.'}</div><small>Browser-local storage only. Export a CSV or ZIP regularly for a permanent research copy.</small>`;
+ const b=$('clearArchiveButton');if(b)b.disabled=!experimentArchive.length;
+}
+function requestClearArchive(){const el=$('clearArchiveConfirm');if(el){el.classList.remove('hidden');el.scrollIntoView({block:'nearest'})}}
+function cancelClearArchive(){const el=$('clearArchiveConfirm');if(el)el.classList.add('hidden')}
+function clearExperimentArchive(){
+ experimentArchive=[];if(!s?.started)experimentCounter=0;
+ saveExperimentArchive();cancelClearArchive();archiveInfo();exportStatus('Saved experiment history cleared. The active game, if any, is unchanged.');
+}
+loadExperimentArchive();
+function save(){try{localStorage.setItem('assemblyLearningV3',JSON.stringify(s))}catch(e){}}
+function restore(){try{const x=JSON.parse(localStorage.getItem('assemblyLearningV3'));if(x&&x.started&&x.players?.length===10){s=x;s.experimentNumber=Number(s.experimentNumber||0)||(++experimentCounter);experimentCounter=Math.max(experimentCounter,s.experimentNumber);s.undoStack=s.undoStack||[];s.expertCounts=s.expertCounts||Array(N).fill(0);s.learningRecords=s.learningRecords||[];if(s.phase==='result'&&s.ui){s.ui.lessons=Array.isArray(s.ui.lessons)?s.ui.lessons:(s.ui.lesson?[s.ui.lesson]:[])}if(s.current)ensureDirectives(s.current)}}catch(e){}render()}
+function begin(){if(s?.started&&s.rounds?.length)archiveCurrentExperiment();else if(s?.started&&!confirm('Start a new experiment?'))return;
+const parties=shuffle(['Blue','Blue','Blue','Blue','Blue','Red','Red','Red','Red','Red']);
+const motivations=shuffle(['Collective','Collective','Collective','Collective','Party','Party','Party','Individual','Individual','Individual']);
+const nextCondition=experimentCounter%2===0?'control_low':'treatment_high';const evidence=shuffle(nextCondition==='control_low'?['low','low','low','low','low','low','medium']:['high','high','high','high','high','high','medium']);const order=shuffle([...Array(10).keys()]);const caseOrder=shuffle([...Array(CASES.length).keys()]);
+experimentCounter++;saveExperimentArchive();s={id:'pilot-'+Date.now(),experimentNumber:experimentCounter,experimentalCondition:nextCondition,started:true,round:0,phase:'draw',players:parties.map((party,i)=>({id:i,party,motivation:motivations[i],personal:0,presidential:0})),order,evidence,caseOrder,rounds:[],events:[],current:null,ui:{},partyPoints:{Blue:0,Red:0},expertCounts:Array(N).fill(0),learningRecords:[],sponsorOrder:shuffle(['Blue','Blue','Red','Red','Joint','Joint',pick(['Blue','Red','Joint'])]),privateEvidenceSchedules:Array.from({length:N},()=>{const types=shuffle([...PRIVATE_SOURCE_TYPES]);return shuffle(nextCondition==='control_low'?[...types.slice(0,2),null,null,null,null,null]:[...types,null,null]);}),undoStack:[]};log('cards_shuffled',null,{experimental_condition:nextCondition,description:'Assignments sealed until cards are drawn'});render()}
+function log(type,player,data={}){s.events.push({game_id:s.id,round:s.round+1,phase:s.phase,type,player:player===null?'':`P${player+1}`,...data});save()}
+function drawCards(){if(s.phase!=='draw')return;s.phase='revealing';render();const el=$('drawDeck');if(el)el.classList.add('dealing');setTimeout(()=>{if(!s||s.phase!=='revealing')return;s.phase='drawn';s.players.forEach(p=>log('card_draw',p.id,{party:p.party,orientation:p.motivation,role:'Legislator (round roles assigned separately)',assignment_method:'randomized at game creation, revealed on draw'}));render()},1300)}
+function enterFirstRound(){if(s.phase!=='drawn')return;newRound()}
+function newRound(){const i=s.round,caseData=CASES[s.caseOrder?.[i]??i],president=s.order[i];const candidates=s.players.map(p=>p.id).filter(j=>j!==president);const minExpert=Math.min(...candidates.map(j=>(s.expertCounts||Array(N).fill(0))[j]));const expert=pick(candidates.filter(j=>(s.expertCounts||Array(N).fill(0))[j]===minExpert));s.expertCounts[expert]++;const comm=pick(['Open','Restricted']);const pressure=pick(['Normal','Short']);const authority=pick(['Consultative','Strong']);const sponsor=s.sponsorOrder?.[i]||pick(['Blue','Red','Joint']);const caucusLeaders={};for(const party of ['Blue','Red']){const eligible=s.players.filter(p=>p.party===party&&p.id!==president&&p.id!==expert);caucusLeaders[party]=pick(eligible).id}const friction=pick(['Caucus pressure','Expert challenge','Presidential discretion','Low friction']);
+s.undoStack=[];s.current={caseData,president,expert,caucusLeaders,friction,comm,pressure,authority,sponsor,evidenceLevel:typeof s.evidence[i]==='string'?s.evidence[i]:(s.evidence[i]?'high':'low'),newEvidence:s.evidence[i]!=='low'&&s.evidence[i]!==false,initial:Array(N).fill(null),final:Array(N).fill(null),confidenceBefore:Array(N).fill(null),confidenceAfter:Array(N).fill(null),privateEvidence:[],share:Array(N).fill(null),shared:Array(N).fill(false),reason:Array(N).fill(''),votes:Array(N).fill(null),selected:null,transcript:[],result:null,briefingHold:null,briefingComplete:false,briefingRequested:false};ensureDirectives(s.current);
+for(let j=0;j<N;j++){
+ // Drawn at game creation: every player receives five cards and two no-card rounds;
+ // all five source families appear once, with a randomized round order.
+ if(!s.privateEvidenceSchedules?.[j]){s.privateEvidenceSchedules=s.privateEvidenceSchedules||[];s.privateEvidenceSchedules[j]=evidenceScheduleForPlayer();}
+ const source=s.privateEvidenceSchedules[j][i];
+ const assigned=!!source,rel=assigned?pick(['high','medium','low']):'none';
+ const details=assigned?evidenceDetails(source,rel,caseData):{source_type:'None',status:'No card',text:'No private evidence assigned this round.'};
+ s.current.privateEvidence.push({assigned,source:source||'None',source_type:details.source_type,status:details.status,relevance:rel,text:details.text});
+ log('private_information_assignment',j,{assigned,source:source||'None',source_type:details.source_type,status:details.status,relevance:rel,information:details.text,assignment_method:(s.experimentalCondition==='control_low'?'low-information: 2 cards per player':'high-information: 5 cards per player'),synthetic:true});
+}
+s.phase='briefing';s.ui={wordIndex:null,confidence:50,initialOrientation:'',transferPlan:'',transferNote:''};log('round_open',null,{experimental_condition:s.experimentalCondition||'mixed_legacy',bill:caseData.title,expert:`P${expert+1}`,president:`P${president+1}`,evidence:s.current.newEvidence,evidence_level:s.current.evidenceLevel,external_evidence_count:s.current.evidenceLevel==='high'?2:s.current.evidenceLevel==='medium'?1:0,communication:comm,time_pressure:pressure,authority,sponsor,friction,caucus_blue:`P${caucusLeaders.Blue+1}`,caucus_red:`P${caucusLeaders.Red+1}`});render()}
+function startRound(){
+ if(s.phase!=='briefing')return;
+ s.phase='initial';
+ s.ui={wordIndex:null,confidence:50,initialOrientation:''};
+ log('round_started',null,{learning_transfer_prompt_timing:'after_deliberation_before_revision'});
+ render()
+}
+function saveMidRoundTransfer(){
+ if(s.phase!=='revision'||!s.current?.transferPromptPending)return;
+ if(!s.ui.transferPlan){alert('Choose an approach before continuing.');return;}
+ const prev=s.learningRecords?.[s.round-1]||null;
+ const previousLessons=(prev?.lessons||(prev?.lesson?[prev.lesson]:[])).join('; ');
+ const choice=s.ui.transferPlan;
+ const note=(s.ui.transferNote||'').trim();
+ s.current.transferPlan={choice,note,previous_lesson:previousLessons,previous_note:prev?.note||'',round:s.round+1,timing:'after_deliberation_before_revision'};
+ s.current.transferPromptPending=false;
+ log('learning_transfer_intention',0,{choice,note,previous_round:s.round,previous_lesson:previousLessons,previous_note:prev?.note||'',before_current_evidence:false,after_initial_judgment:true,after_deliberation:true,before_revised_judgment:true,stage:'mid_round'});
+ const current=s.rounds[s.round];if(current){current.initial_transfer_intention=choice;current.initial_transfer_note=note;current.transfer_timing='after_deliberation_before_revision';}const prior=s.rounds[s.round-1];
+ if(prior){prior.next_round_transfer_intention=choice;prior.next_round_transfer_note=note;prior.next_round_transfer_timing='after_deliberation_before_revision';}
+ s.ui={wordIndex:s.current.initial[0],confidence:50,reason:''};
+ render();
+}
+function botInitial(j){const c=s.current,p=s.players[j];let w=rnd(3);if(p.motivation==='Collective'&&Math.random()<.42)w=c.caseData.best;if(p.motivation==='Party'&&Math.random()<.5)w=p.party==='Blue'?0:2;return w}
+function initial(){const c=s.current;if(s.ui.wordIndex===undefined||s.ui.wordIndex===null){alert('Please select a word before continuing.');return}if(!s.ui.initialOrientation){alert('Please choose a reason before continuing.');return}c.initial[0]=Number(s.ui.wordIndex);c.confidenceBefore[0]=Number(s.ui.confidence??50);log('initial_judgment',0,{option:c.caseData.opts[c.initial[0]],confidence:c.confidenceBefore[0],decision_orientation:s.ui.initialOrientation,orientation_source:'human_self_report'});for(let j=1;j<N;j++){c.initial[j]=botInitial(j);c.confidenceBefore[j]=45+rnd(46);log('initial_judgment',j,{option:c.caseData.opts[c.initial[j]],confidence:c.confidenceBefore[j],decision_orientation:s.players[j].motivation,orientation_source:'simulated_profile'})}s.phase='sharing';s.ui={share:null,shareOrientation:'',argument:'question'};render()}
+function botShare(j){const c=s.current,p=s.players[j],rel=c.privateEvidence[j].relevance;if(!c.privateEvidence[j].assigned)return false;let prob=p.motivation==='Collective'?.83:p.motivation==='Party'?.48:.32;if(rel==='high'&&p.motivation==='Collective')prob+=.1;if(c.comm==='Restricted')prob*=.64;if(c.pressure==='Short')prob*=.78;if(c.friction==='Caucus pressure'&&p.motivation==='Party')prob*=.65;if(c.friction==='Expert challenge'&&j===c.expert)prob=.98;return Math.random()<prob}
+function share(){const c=s.current;if(c.privateEvidence[0].assigned&&(!['reveal','withhold'].includes(s.ui.share)||!s.ui.shareOrientation)){alert('Choose whether to reveal the card and give a reason.');return;}const reveal=c.privateEvidence[0].assigned&&s.ui.share==='reveal';c.share[0]=reveal;c.shared[0]=reveal;log('information_choice',0,{choice:reveal?'reveal':'withhold',relevance:c.privateEvidence[0].relevance,source:c.privateEvidence[0].source,assigned:c.privateEvidence[0].assigned,information:c.privateEvidence[0].text,decision_orientation:s.ui.shareOrientation||'evidence-value',orientation_source:'human_self_report'});if(reveal)c.transcript.push({who:'P1 (You)',text:c.privateEvidence[0].text});
+for(let j=1;j<N;j++){let yes=botShare(j);c.share[j]=yes;c.shared[j]=yes;log('information_choice',j,{choice:yes?'reveal':'withhold',relevance:c.privateEvidence[j].relevance,source:c.privateEvidence[j].source,assigned:c.privateEvidence[j].assigned,information:c.privateEvidence[j].text,decision_orientation:s.players[j].motivation,orientation_source:'simulated_profile'});if(yes)c.transcript.push({who:`P${j+1}`,text:c.privateEvidence[j].text})}
+s.phase='deliberation';s.ui={target:1,strategy:'evidence',argument:'question',expertAction:'challenge'};log('information_stage_complete',null,{cards_shared:c.shared.filter(Boolean).length});render()}
+function deliberate(){const c=s.current;
+log('argument',0,{kind:s.ui.argument||'question',text:s.ui.argument==='question'?'What evidence supports the proposed solution?':s.ui.argument==='compare'?'How do the competing solutions compare?':'We should weigh the evidence before deciding.'});
+c.transcript.push({who:'P1 (You)',text:s.ui.argument==='question'?'What evidence supports the proposed solution?':s.ui.argument==='compare'?'How do the competing solutions compare?':'We should weigh the evidence before deciding.'});
+const target=Number(s.ui.target??1),strategy=s.ui.strategy||'evidence';
+c.intervention={target,strategy,success:false};
+log('targeted_deliberation',0,{target:`P${target+1}`,strategy,advocated_word:c.caseData.opts[c.initial[0]],target_initial_word:c.caseData.opts[c.initial[target]],human_selected:true});
+c.transcript.push({who:'P1 (You)',text:`I approach P${target+1}, advocating ${c.caseData.opts[c.initial[0]]} using ${strategy}.`});
+
+if(c.friction==='Expert challenge'){
+ const userExpert=c.expert===0;const expertAction=userExpert?(s.ui.expertAction||'challenge'):'challenge';
+ const msg=expertAction==='challenge'?`Expert P${c.expert+1} challenges the prevailing assumptions and presents evidence favoring ${c.caseData.opts[c.caseData.best]}.`:`Expert P${c.expert+1} requests verification before the assembly treats any proposal as established.`;
+ c.transcript.push({who:`Expert P${c.expert+1}`,text:msg});log('expert_challenge',c.expert,{statement:msg,option:c.caseData.opts[c.caseData.best],expert_action:expertAction,source:userExpert?'human_selection':'simulated'})}
+if(c.newEvidence){publicEvidence().forEach(e=>log('external_evidence_presented',c.expert,{source:e.source,source_type:e.type,presenter:`P${e.presenter+1}`,presenter_role:e.presenterRole,presenter_party:e.presenterParty,statement:e.statement,synthetic:true}));}
+s.phase='revision';c.transferPromptPending=s.round>0&&!c.transferPlan;s.ui={wordIndex:c.initial[0],confidence:50,reason:'',transferPlan:'',transferNote:''};render()}
+function publicEvidence(){
+ const c=s.current;
+ if(!c.newEvidence)return [];
+ return (c.evidenceLevel==='medium'?c.caseData.evidence.slice(0,1):c.caseData.evidence).map((statement,i)=>{
+   const t=statement.toLowerCase();
+   let source='Statistical Research Office',type='Research findings';
+   if(/budget|implementation|program evaluation|deployment analysis|engineering review|maintenance records|impact assessment/.test(t)){source='Executive Policy Office';type='Policy / implementation assessment'}
+   else if(/incident logs|flood maps/.test(t)){source='Public Data Office';type='Administrative records'}
+   else if(/survey|needs assessment/.test(t)){source='Statistical Research Office';type='Survey / needs assessment'}
+   else if(/pilot/.test(t)){source='Program Evaluation Unit';type='Pilot evaluation'}
+   return {statement,source,type,issuer:'Fictional institutional source',presenter:c.expert,presenterRole:'Institutional Expert',presenterParty:s.players[c.expert].party,index:i+1};
+ });
+}
+function botFinal(j){const c=s.current,p=s.players[j],hasHigh=c.shared.some((v,k)=>v&&c.privateEvidence[k].relevance==='high');const initial=c.initial[j];if(c.intervention&&c.intervention.target===j){const technique=c.intervention.strategy;const susceptibility=technique==='evidence'?(p.motivation==='Collective'?.69:.32):technique==='compromise'?.48:technique==='coalition'?(p.motivation==='Party'?.58:.34):.24;if(Math.random()<susceptibility){c.intervention.success=true;return c.initial[0]}}let prob=.12+(hasHigh?.24:0)+(c.newEvidence?.24:0)+(p.motivation==='Collective'?.22:0)-(p.motivation==='Party'?.10:0)-(c.pressure==='Short'?.09:0)+(c.friction==='Expert challenge'?.13:0);return Math.random()<prob?c.caseData.best:initial}
+function revise(){const c=s.current;c.final[0]=Number(s.ui.wordIndex);c.confidenceAfter[0]=Number(s.ui.confidence);c.reason[0]=s.ui.reason||'other';log('revised_judgment',0,{initial:c.caseData.opts[c.initial[0]],final:c.caseData.opts[c.final[0]],confidence_before:c.confidenceBefore[0],confidence_after:c.confidenceAfter[0],reason:c.reason[0],decision_orientation:c.reason[0],orientation_source:'human_self_report',evidence_consistent:c.final[0]===c.caseData.best});for(let j=1;j<N;j++){c.final[j]=botFinal(j);c.confidenceAfter[j]=clamp(c.confidenceBefore[j]+(c.final[j]===c.caseData.best?7:-3)+rnd(11)-5,0,100);c.reason[j]=c.final[j]===c.initial[j]?'prior-belief':c.newEvidence?'external-evidence':'shared-evidence';log('revised_judgment',j,{initial:c.caseData.opts[c.initial[j]],final:c.caseData.opts[c.final[j]],confidence_before:c.confidenceBefore[j],confidence_after:c.confidenceAfter[j],reason:c.reason[j],decision_orientation:s.players[j].motivation,orientation_source:'simulated_profile',evidence_consistent:c.final[j]===c.caseData.best})}if(c.intervention){const d=c.intervention;log('targeted_deliberation_result',d.target,{by:'P1',strategy:d.strategy,changed_target:d.success,target_final_word:c.caseData.opts[c.final[d.target]],target_initial_word:c.caseData.opts[c.initial[d.target]]});c.transcript.push({who:`P${d.target+1}`,text:d.success?'I reconsidered after the direct appeal.':'I have maintained my independent judgment after the appeal.'})}s.phase='decision';s.ui={selected:c.final[0]};render()}
+function decide(){const c=s.current;if(c.president===0&&(s.ui.selected===null||s.ui.selected===undefined)){alert('Select presidential wording.');return;}if(c.president===0){c.selected=Number(s.ui.selected)}else{const counts=[0,0,0];c.final.forEach(x=>counts[x]++);let most=counts.indexOf(Math.max(...counts));c.selected=(c.authority==='Strong'||c.friction==='Presidential discretion')&&Math.random()<(c.friction==='Presidential discretion'?.75:.28)?c.final[c.president]:most}log('presidential_selection',c.president,{selected:c.caseData.opts[c.selected],authority:c.authority});s.phase='vote';s.ui={vote:null};scheduleBriefing();render()}
+function scheduleBriefing(){
+ const c=s.current;if(!c||c.briefingRequested)return;
+ c.briefingRequested=true;
+ const humanLeader=Object.values(c.caucusLeaders||{}).includes(0);
+ let issuer=null,kind=null;
+ if(c.friction==='Caucus pressure'||(humanLeader&&c.friction!=='Low friction')){issuer='Caucus leader P'+(c.caucusLeaders[s.players[0].party]+1);kind='caucus';}
+ else if(c.friction==='Presidential discretion'||(c.president===0&&c.friction!=='Low friction')){issuer='President P'+(c.president+1);kind='president';}
+ else if(Math.random()<.34){kind=Math.random()<.5?'caucus':'president';issuer=kind==='president'?'President P'+(c.president+1):'Caucus leader P'+(c.caucusLeaders[s.players[0].party]+1);}
+ if(kind){c.briefingHold={kind,issuer,stage:'requested',requesterPlayer:kind==='president'?c.president:c.caucusLeaders[s.players[0].party]};c.transcript.push({who:issuer,text:'Calls a mandatory review before the legislative vote. Voting is suspended.'});log('briefing_hold_requested',c.briefingHold.requesterPlayer,{kind,issuer});}
+ else c.briefingComplete=true;
+}
+function openBriefing(){const c=s.current;if(!c||s.phase!=='vote'||!c.briefingHold||c.briefingHold.stage!=='requested')return;c.briefingHold.stage='open';log('briefing_started',c.briefingHold.requesterPlayer,{kind:c.briefingHold.kind});render()}
+function finishBriefing(){const c=s.current;if(!c||s.phase!=='vote'||!c.briefingHold||c.briefingHold.stage!=='open')return;
+ const pos=c.briefingHold.kind==='caucus'?c.caucusLeaders[s.players[0].party]:c.president;
+ const old=c.final[pos],word=c.caseData.opts[old??c.selected];
+ c.transcript.push({who:c.briefingHold.issuer,text:'Review complete. Position on '+word+'. Assembly may proceed to vote.'});
+ c.briefingHold.stage='complete';c.briefingComplete=true;c.briefingDecision='attended';c.briefingPenalty=0;
+ log('briefing_completed',pos,{kind:c.briefingHold.kind,leader_preference:word,caucus_directive:c.directives[s.players[0].party],presidential_directive:c.presidentDirective});render()}
+function declineBriefing(){const c=s.current;if(!c||s.phase!=='vote'||!c.briefingHold||c.briefingComplete)return;
+ const hold=c.briefingHold;
+ c.briefingDecision='declined';c.briefingPenalty=-2;
+ scorePlayer(0,-2,'declined institutional briefing');
+ c.transcript.push({who:'P1 (You)',text:'Declined '+hold.kind+' briefing, accepted a 2-point personal penalty, and proceeded to vote.'});
+ log('briefing_declined',0,{kind:hold.kind,issuer:hold.issuer,penalty:-2,final_bill:c.caseData.title,selected_word:c.caseData.opts[c.selected]});
+ hold.stage='declined';c.briefingComplete=true;render()}
+function requestHumanBriefing(kind){const c=s.current;if(s.phase!=='vote'||c.briefingHold)return;
+ if(kind==='president'&&c.president!==0)return;
+ if(kind==='caucus'&&c.caucusLeaders[s.players[0].party]!==0)return;
+ c.briefingComplete=false; c.briefingHold={kind,issuer:kind==='president'?'President P1':'Caucus leader P1',stage:'requested',requesterPlayer:0};
+ log('briefing_hold_requested',0,{kind,issuer:c.briefingHold.issuer});render()}
+function ensureDirectives(c){
+ if(!c.directives){c.directives={Blue:Math.random()<.5?'YES':'NO',Red:Math.random()<.5?'YES':'NO'};c.presidentDirective=Math.random()<.6?'YES':'NO'}
+ if(!c.scoreDelta)c.scoreDelta=Array(N).fill(0);
+ if(c.briefingComplete===undefined){c.briefingComplete=true;c.briefingRequested=true;c.briefingHold=null;}
+}
+function leaderDirective(party,stance){
+ const c=s.current;
+ if(s.phase!=='vote'||!c.briefingComplete||c.caucusLeaders[party]!==0)return;
+ if(!['YES','NO','NONE'].includes(stance))return;
+ c.humanCaucusDirective=stance;
+ c.directives[party]=stance;
+ log('leadership_directive',0,{party,stance,pressure_issued:stance!=='NONE',target:'same-party legislators',stage:'before_legislative_vote',actor_role:'Caucus leader'});
+ render();
+}
+function presidentialDirective(stance){const c=s.current;if(c.president!==0)return;c.presidentDirective=stance;log('presidential_directive',0,{stance});render()}
+function saveUndo(){s.undoStack=s.undoStack||[];const clone=JSON.parse(JSON.stringify(s));clone.undoStack=[];s.undoStack.push(clone);if(s.undoStack.length>7)s.undoStack.shift()}
+function goBack(){if(!s?.undoStack?.length)return;const stack=s.undoStack;const prev=stack.pop();s=prev;s.undoStack=stack;render()}
+function moveInitial(){saveUndo();initial()}
+function moveShare(){saveUndo();share()}
+function moveDeliberate(){saveUndo();deliberate()}
+function moveRevise(){saveUndo();revise()}
+function moveDecide(){saveUndo();decide()}
+function moveVote(){saveUndo();vote()}
+function scorePlayer(j,delta,reason){s.players[j].personal+=delta;s.current.scoreDelta[j]+=delta;log('individual_points',j,{delta,reason,personal_total:s.players[j].personal})}
+function makeRole(c){if(c.expert===0)return 'INSTITUTIONAL EXPERT · NONVOTING';if(c.president===0)return 'PRESIDENT · FINAL WORDING & PRESSURE';if(c.caucusLeaders[s.players[0].party]===0)return 'CAUCUS LEADER · SET PARTY VOTE DIRECTIVE';return 'LEGISLATOR · CAST A VOTE'}
+function roleIcon(kind){return kind==='expert'?'🔍':kind==='president'?'★':kind==='caucus'?'☰':'👤'}
+function seatRoleLabel(c,p){if(!c)return {kind:'legislator',label:'Legislator'};if(p.id===c.president)return {kind:'president',label:'President'};if(p.id===c.expert)return {kind:'expert',label:'Expert · nonvoting'};if(p.id===c.caucusLeaders?.[p.party])return {kind:'caucus',label:'Caucus leader'};return {kind:'legislator',label:'Legislator'}}
+function pressureInfo(c){const pp=s.players[0].party,leader=c.caucusLeaders[pp],l=c.directives?.[pp]||'YES';let out=[];
+ if(c.friction==='Caucus pressure'&&c.expert!==0&&leader!==0)out.push(`Caucus leader P${leader+1} directs ${l}. Defying costs <b>4 personal points</b>; following earns 2.`);
+ if(c.friction==='Caucus pressure'&&leader===0)out.push('You are the caucus leader. Set the directive for your party. Other members face a 4-point dissent penalty.');
+ if(c.friction==='Presidential discretion'&&c.expert!==0&&c.president!==0)out.push(`President P${c.president+1} directs ${c.presidentDirective}. Defying costs <b>3 personal points</b>; following earns 2.`);
+ if(c.friction==='Presidential discretion'&&c.president===0)out.push('You are President. Set a voting directive. Other voting members face a 3-point dissent penalty.');
+ if(c.friction==='Expert challenge')out.push('The expert publicly challenges the prevailing interpretation; there is no automatic vote penalty.');
+ if(c.friction==='Low friction')out.push('Institutional pressure is low this round; there are no directive penalties.');
+ return out.join('<br>')}
+function botVoteProbability(j){const c=s.current,p=s.players[j];let prob=.22+(c.selected===c.final[j]?.46:0)+(c.selected===c.caseData.best?.16:0)+(p.motivation==='Party'&&((p.party==='Blue'&&c.sponsor==='Blue')||(p.party==='Red'&&c.sponsor==='Red'))?.13:0);const leader=c.caucusLeaders?.[p.party];if(leader!==undefined&&leader!==j&&leader!==c.expert){const stance=c.directives?.[p.party]||'YES';const influence=c.friction==='Caucus pressure'?.40:.14;if(stance==='YES')prob+=influence;else if(stance==='NO')prob-=influence}return clamp(prob,.05,.95)}
+function botVote(j){return Math.random()<botVoteProbability(j)?'YES':'NO'}
+function votingPreview(candidate){
+ const c=s.current,p=s.players[0],expert=c.expert===0;
+ const probs=[];for(let j=1;j<N;j++){if(j!==c.expert)probs.push(botVoteProbability(j))}
+ let distribution=[1];for(const q of probs){const next=Array(distribution.length+1).fill(0);for(let k=0;k<distribution.length;k++){next[k]+=distribution[k]*(1-q);next[k+1]+=distribution[k]*q}distribution=next}
+ const humanYes=!expert&&candidate==='YES'?1:0;
+ const chance=distribution.reduce((sum,prob,k)=>sum+(k+humanYes>=5?prob:0),0);
+ const party=p.party,leader=c.caucusLeaders[party];let leadership=0;
+ if(!expert&&c.friction==='Caucus pressure'&&leader!==0)leadership=candidate===c.directives[party]?2:-4;
+ if(!expert&&c.friction==='Presidential discretion'&&c.president!==0)leadership=candidate===c.presidentDirective?2:-3;
+ const preferenceBonus=c.final[0]===c.caseData.best?4:0;
+ const policyOnPass=!expert&&candidate==='YES'&&c.selected===c.caseData.best?4:0;
+ const policyOnFail=!expert&&candidate==='NO'&&c.selected!==c.caseData.best?4:0;
+ const coalitionBonus=!expert&&candidate==='YES'?2:0;
+ const teamBonus=!expert&&candidate==='YES'&&(c.sponsor===party||c.sponsor==='Joint')?2:0;
+ const outcomeBonus=expert?0:3;
+ const passRange=preferenceBonus+leadership+(candidate==='YES'?outcomeBonus+policyOnPass+coalitionBonus+teamBonus:policyOnFail);
+ const failRange=preferenceBonus+leadership+(candidate==='NO'?outcomeBonus+policyOnFail:0);
+ const compliance=c.friction==='Caucus pressure'?`Caucus directive ${c.directives[party]}`:c.friction==='Presidential discretion'?`President directive ${c.presidentDirective}`:'No automatic leadership penalty';
+ return {chance,passRange,failRange,leadership,preferenceBonus,compliance};
+}
+// Forecast each possible roll of the simulated voting agents without making actual votes.
+// The figures are model probabilities, not promises of points or revealed votes.
+function voteGainForecast(candidate){
+ const c=s.current,p=s.players[0];
+ if(c.expert===0)return null;
+ const probabilities=[];
+ for(let j=1;j<N;j++)if(j!==c.expert)probabilities.push({j,yes:botVoteProbability(j)});
+ // Track probability for YES totals and cross-party YES support.
+ let outcomes=[{votes:0,blue:false,red:false,probability:1}];
+ for(const agent of probabilities){
+  const next=[];
+  for(const state of outcomes){
+   next.push({...state,probability:state.probability*(1-agent.yes)});
+   next.push({votes:state.votes+1,blue:state.blue||s.players[agent.j].party==='Blue',red:state.red||s.players[agent.j].party==='Red',probability:state.probability*agent.yes});
+  }
+  outcomes=next;
+ }
+ let chanceGain=0,passChance=0,expected=0,min=Infinity,max=-Infinity,expectedPresidential=0;
+ for(const o of outcomes){
+  const pass=o.votes+(candidate==='YES'?1:0)>=5;
+  const bipartisan=(o.blue||(candidate==='YES'&&p.party==='Blue'))&&(o.red||(candidate==='YES'&&p.party==='Red'));
+  if(pass)passChance+=o.probability;
+  let gain=c.final[0]===c.caseData.best?4:0;
+  if(candidate===(pass?'YES':'NO'))gain+=3;
+  if((pass&&c.selected===c.caseData.best&&candidate==='YES')||(!pass&&c.selected!==c.caseData.best&&candidate==='NO'))gain+=4;
+  if(pass&&bipartisan&&candidate==='YES')gain+=2;
+  if(pass&&candidate==='YES'&&(c.sponsor===p.party||c.sponsor==='Joint'))gain+=2;
+  if(c.friction==='Caucus pressure'&&c.caucusLeaders[p.party]!==0&&['YES','NO'].includes(c.directives[p.party]))gain+=candidate===c.directives[p.party]?2:-4;
+  if(c.friction==='Presidential discretion'&&c.president!==0)gain+=candidate===c.presidentDirective?2:-3;
+  // Presidential points are a different score category; display separately if relevant.
+  const presidency=c.president===0&&pass?10+(bipartisan?10:0):0;
+  if(gain>0)chanceGain+=o.probability;
+  expected+=gain*o.probability;
+  expectedPresidential+=presidency*o.probability;
+  min=Math.min(min,gain);max=Math.max(max,gain);
+ }
+ return {chanceGain,passChance,expected,min,max,expectedPresidential};
+}
+function voteGainCard(candidate){
+ const v=voteGainForecast(candidate);
+ if(!v)return '';
+ const points=x=>`${x>=0?'+':''}${x.toFixed(1)}`;
+ const pct=x=>`${Math.round(x*100)}%`;
+ return `<div class="vote-gain-estimate" aria-label="Estimated rewards for ${candidate}"><div class="vote-gain-primary"><strong>${pct(v.chanceGain)}</strong><span>chance of personal point gain</span></div><div class="vote-gain-details"><span>Expected: <b>${points(v.expected)} pts</b></span><span>Range: <b>${v.min>=0?'+':''}${v.min} to ${v.max>=0?'+':''}${v.max} pts</b></span><span>Bill passes: <b>${pct(v.passChance)}</b></span>${s.current.president===0?`<span>Expected presidency: <b>${points(v.expectedPresidential)} pts</b></span>`:''}</div></div>`;
+}
+function previewPanel(){const c=s.current;if(!c||!c.briefingComplete||s.phase!=='vote')return '';
+ if(c.expert===0)return `<div class="callout"><b>Nonvoting expert</b><p>You cannot cast a vote. Your pre-coded policy-judgment score remains visible after the round.</p></div>`;
+ const a=votingPreview('YES'),b=votingPreview('NO');let selected=s.ui.vote||'YES';
+ const row=(v,x)=>`<tr${selected===v?' style="background:rgba(205,165,81,.18)"':''}><td><b>${v}</b>${selected===v?' · selected':''}</td><td>${Math.round(x.chance*100)}%</td><td>${x.passRange>=0?'+':''}${x.passRange}</td><td>${x.failRange>=0?'+':''}${x.failRange}</td><td>${x.leadership>0?'+':''}${x.leadership}</td></tr>`;
+ return `<div class="pressure" style="border-color:var(--gold)"><b>PRE-VOTE CONSEQUENCE SIMULATOR</b><p>Compare the choices before you submit. These are <b>model-derived estimates</b> based on other legislators' current preferences and the game's simulated voting rules—not revealed future votes.</p><div class="scoreboard"><table><thead><tr><th>Your vote</th><th>Estimated passage chance</th><th>Your pts if passes</th><th>Your pts if fails</th><th>Leadership pts</th></tr></thead><tbody>${row('YES',a)}${row('NO',b)}</tbody></table></div><p class="muted">Includes current preference, expected outcome, team/coalition rewards (conditional on bipartisan passage), and leadership effects. Actual points may differ because the bipartisan result and other votes remain uncertain.</p><p><b>Pressure:</b> ${esc(a.compliance)} · Sponsor ${esc(c.sponsor)}. Your vote is not submitted until you click the final button.</p></div>`;
+}
+function vote(){const c=s.current;if(c.caucusLeaders[s.players[0].party]===0&&!['YES','NO','NONE'].includes(c.humanCaucusDirective)){alert('As caucus leader, please issue a YES/NO voting directive or select No caucus pressure.');return;}if(c.expert!==0&&!['YES','NO'].includes(s.ui.vote)){alert('Please choose YES or NO before voting.');return;}if(!c.briefingComplete){log('vote_blocked',null,{reason:'mandatory institutional briefing still pending'});render();return;}
+// Caucus leaders speak first, giving their party a non-binding voting cue. This creates measurable friction.
+const leaders=Object.values(c.caucusLeaders||{});
+for(const j of leaders){if(j===c.expert)continue;c.votes[j]=j===0?s.ui.vote:botVote(j);log('caucus_signal',j,{party:s.players[j].party,stance:c.directives[s.players[j].party],leader_vote:c.votes[j],influence:'nonbinding, up to four same-party colleagues'})}
+for(let j=0;j<N;j++){if(j===c.expert)continue;if(c.votes[j]===null)c.votes[j]=j===0?s.ui.vote:botVote(j);const leader=c.caucusLeaders?.[s.players[j].party];if(leader!==undefined&&leader!==j)log('caucus_response',j,{leader:`P${leader+1}`,leader_signal:c.directives[s.players[j].party],own_vote:c.votes[j],alignment:c.directives[s.players[j].party]==='NONE'?'no_directive':c.votes[j]===c.directives[s.players[j].party]?'aligned':'dissent',friction:c.friction});log('legislative_vote',j,{vote:c.votes[j],preferred:c.caseData.opts[c.final[j]],selected:c.caseData.opts[c.selected],decision_orientation:j===0?(s.ui.voteOrientation||'policy-outcome'):s.players[j].motivation,orientation_source:j===0?'human_self_report':'simulated_profile',institutional_role:j===c.president?'President':j===leader?'Caucus leader':'Legislator',caucus_leader:leader===undefined?'':`P${leader+1}`,friction:c.friction,caucus_alignment:leader===undefined||leader===j?'leader':c.votes[j]===c.votes[leader]?'aligned':'dissent',incentive_profile:s.players[j].motivation})}
+const yes=c.votes.filter(x=>x==='YES').length;const pass=yes>=5;const bip=s.players.some((p,j)=>p.party==='Blue'&&c.votes[j]==='YES')&&s.players.some((p,j)=>p.party==='Red'&&c.votes[j]==='YES');
+if(pass){if(c.sponsor==='Joint'){s.partyPoints.Blue+=5;s.partyPoints.Red+=5}else{s.partyPoints[c.sponsor]+=10}if(bip){s.partyPoints.Blue+=10;s.partyPoints.Red+=10} s.players[c.president].presidential+=10+(bip?10:0)}
+for(let j=0;j<N;j++){
+ if(c.final[j]===c.caseData.best)scorePlayer(j,4,'evidence-aligned revised judgment');
+ if(j===c.expert)continue;
+ if(c.votes[j]===(pass?'YES':'NO'))scorePlayer(j,3,'vote matched legislative outcome');
+  if((pass&&c.selected===c.caseData.best&&c.votes[j]==='YES')||(!pass&&c.selected!==c.caseData.best&&c.votes[j]==='NO'))scorePlayer(j,4,'effective policy outcome supported');
+  if(pass&&bip&&c.votes[j]==='YES')scorePlayer(j,2,'successful bipartisan coalition');
+  if(pass&&c.votes[j]==='YES'&&(c.sponsor===s.players[j].party||c.sponsor==='Joint'))scorePlayer(j,2,'sponsoring party team victory');
+ const party=s.players[j].party,leader=c.caucusLeaders[party];
+ if(c.friction==='Caucus pressure'&&j!==leader&&['YES','NO'].includes(c.directives[party])){const agrees=c.votes[j]===c.directives[party];scorePlayer(j,agrees?2:-4,agrees?'followed caucus directive':'defied caucus directive')}
+ if(c.friction==='Presidential discretion'&&j!==c.president){const agrees=c.votes[j]===c.presidentDirective;scorePlayer(j,agrees?2:-3,agrees?'followed presidential directive':'defied presidential directive')}
+ }
+ const acc=c.selected===c.caseData.best;const changes=c.final.filter((v,j)=>v!==c.initial[j]).length;const revealed=c.shared.filter(Boolean).length;const high=c.shared.filter((v,j)=>v&&c.privateEvidence[j].relevance==='high').length;
+const bipPassed=pass&&bip;c.result={yes,pass,bip,bipPassed,acc,changes,revealed,high};const record={briefing_decision:c.briefingDecision||"none",briefing_penalty:c.briefingPenalty||0,briefing_issuer:c.briefingHold?.issuer||"",friction:c.friction,personal_point_delta:[...c.scoreDelta],targeted_deliberation:c.intervention?JSON.stringify(c.intervention):'',caucus_directive_blue:c.directives.Blue,caucus_directive_red:c.directives.Red,human_caucus_directive:c.humanCaucusDirective||'',human_caucus_pressure_issued:!!c.humanCaucusDirective&&c.humanCaucusDirective!=='NONE',presidential_directive:c.presidentDirective,caucus_blue:`P${c.caucusLeaders.Blue+1}`,caucus_red:`P${c.caucusLeaders.Red+1}`,game_id:s.id,round:s.round+1,bill:c.caseData.title,correct_option:c.caseData.opts[c.caseData.best],selected_option:c.caseData.opts[c.selected],decision_evidence_consistent:acc,passed:pass,bipartisan:bip,bipartisan_support:bip,bipartisan_passage:bipPassed,yes_votes:yes,preference_changes:changes,evidence_revealed:revealed,high_relevance_revealed:high,new_external_evidence:c.newEvidence,evidence_level:c.evidenceLevel,experimental_condition:s.experimentalCondition||'mixed_legacy',external_evidence_count:publicEvidence().length,communication:c.comm,time_pressure:c.pressure,authority:c.authority,sponsor:c.sponsor,president:`P${c.president+1}`,expert:`P${c.expert+1}`,players:JSON.parse(JSON.stringify(s.players)),initial:[...c.initial],final:[...c.final],confidenceBefore:[...c.confidenceBefore],confidenceAfter:[...c.confidenceAfter],share:[...c.share],privateEvidence:JSON.parse(JSON.stringify(c.privateEvidence)),reasons:[...c.reason],votes:[...c.votes]};s.rounds.push(record);log('round_result',null,{...c.result,selected:record.selected_option,correct:record.correct_option});s.phase='result';s.ui={lessons:[],lessonNote:''};render()}
+function next(){
+ if(s.phase!=='result')return;
+ const lessons=Array.isArray(s.ui.lessons)?s.ui.lessons:[];
+ if(!lessons.length){alert('Select at least one lesson from this round before continuing.');return;}
+ const note=(s.ui.lessonNote||'').trim();
+ const prev=s.learningRecords?.[s.round];
+ if(!s.learningRecords)s.learningRecords=[];
+ s.learningRecords[s.round]={round:s.round+1,lessons:[...lessons],note};
+ const rr=s.rounds[s.round];if(rr){rr.learning_reflection=lessons.join('; ');rr.learning_reflection_count=lessons.includes('none')?0:lessons.length;rr.learning_reflection_note=note;rr.initial_transfer_intention=s.current.transferPlan?.choice||'';rr.initial_transfer_note=s.current.transferPlan?.note||'';rr.transfer_timing=s.current.transferPlan?.timing||'';}
+ log('learning_reflection',0,{lessons:[...lessons],lesson_count:lessons.includes('none')?0:lessons.length,note,round:s.round+1,updated:!!prev});
+ s.undoStack=[];s.round++;if(s.round>=7){s.phase='complete';archiveCurrentExperiment();render()}else newRound()
+}
+function toggleLesson(value){
+ if(s.phase!=='result')return;
+ const before=Array.isArray(s.ui.lessons)?[...s.ui.lessons]:[];
+ let after;
+ if(value==='none')after=before.includes('none')?[]:['none'];
+ else after=before.includes(value)?before.filter(x=>x!==value):[...before.filter(x=>x!=='none'),value];
+ s.ui.lessons=after;
+ log('learning_lesson_selection',0,{clicked:value,previous:before.join('; '),selected:after.join('; '),multiple_selection:true});
+ render();
+}
+function btn(label,fn,primary=true){return `<button class="${primary?'primary':''}" onclick="${fn}">${label}</button>`}
+function choices(opts,key,selected){return `<div class="choices">${opts.map((x,i)=>`<button class="choice ${selected===i?'selected':''}" onclick="choose('${key}',${i})">${esc(x)}</button>`).join('')}</div>`}
+function choose(k,v){const old=s.ui[k];s.ui[k]=v;log('user_selection',0,{field:k,previous:old??'',value:v,word:k==='wordIndex'||k==='selected'?s.current.caseData.opts[Number(v)]:''});render()}
+function set(k,v){const old=s.ui[k];s.ui[k]=v;if(k!=='confidence')log('user_input',0,{field:k,previous:old??'',value:v});else save();const b=$('initialContinue');if(b)b.disabled=s.ui.wordIndex===null||s.ui.wordIndex===undefined||!s.ui.initialOrientation;const shareBtn=$('shareContinue');if(shareBtn)shareBtn.disabled=!!s.current?.privateEvidence?.[0]?.assigned&&(!['reveal','withhold'].includes(s.ui.share)||!s.ui.shareOrientation);const reviseBtn=$('reviseContinue');if(reviseBtn)reviseBtn.disabled=s.ui.wordIndex===undefined||s.ui.wordIndex===null||!s.ui.reason}
+let activeWorkspacePane='board';
+function workspaceTab(name){
+ if(!['dashboard','board','data'].includes(name))return;
+ activeWorkspacePane=name;
+ document.querySelectorAll('[data-work-pane]').forEach(el=>el.classList.toggle('hidden',el.getAttribute('data-work-pane')!==name));
+ const ids={dashboard:'workTabDashboard',board:'workTabBoard',data:'workTabData'};
+ for(const [pane,id] of Object.entries(ids)){const button=document.getElementById(id);if(button){button.classList.toggle('active',pane===name);button.setAttribute('aria-selected',pane===name?'true':'false')}}
+}
+function stepLabel(phase){const steps={initial:1,sharing:2,deliberation:3,revision:4,decision:5,vote:6,result:7};return steps[phase]?`Step ${steps[phase]}/7`:phase==='complete'?'7/7 complete':'0/7 · Setup'}
+function render(){archiveInfo();if(!s?.started){$('setup').classList.remove('hidden');$('workspace').classList.add('hidden');return}$('setup').classList.add('hidden');$('workspace').classList.remove('hidden');const c=s.current,p=s.players[0],caseData=c?.caseData;$('roundTitle').textContent=s.phase==='complete'?'EXPERIMENT COMPLETE':(['draw','revealing','drawn'].includes(s.phase)?'SESSION SETUP · DRAW CARDS':`ROUND ${s.round+1} OF 7 · ${s.phase.toUpperCase()}`);$('roundTitle').textContent='Experiment '+s.experimentNumber+' · '+(s.experimentalCondition==='treatment_high'?'HIGH-INFO TREATMENT':s.experimentalCondition==='control_low'?'LOW-INFO CONTROL':'MIXED LEGACY')+' · '+$('roundTitle').textContent;$('self').textContent=['draw','revealing'].includes(s.phase)?'Assignments concealed':`P1 ★ · ${p.party} · ${p.motivation} incentive`;$('feltCenter').innerHTML=['draw','revealing','drawn'].includes(s.phase)?'<small>Seven rounds · assignments drawn once</small>':`<small>President P${c.president+1} · Expert P${c.expert+1}</small>`;$('progress').innerHTML=Array.from({length:7},(_,i)=>`<span class="${i<s.round?'done':i===s.round?'active':''}">R${i+1}</span>`).join('');
+for(const side of ['Blue','Red']){$(side.toLowerCase()).innerHTML=s.players.filter(p=>p.party===side).sort((a,b)=>(b.personal+b.presidential)-(a.personal+a.presidential)).map(p=>{
+const hidden=['draw','revealing'].includes(s.phase),started=!!c;
+const initialWord=started&&c.initial?.[p.id]!==null&&c.initial?.[p.id]!==undefined?c.caseData.opts[c.initial[p.id]]:null;
+const finalWord=started&&c.final?.[p.id]!==null&&c.final?.[p.id]!==undefined?c.caseData.opts[c.final[p.id]]:null;
+const changed=initialWord!==null&&finalWord!==null&&initialWord!==finalWord;
+const v=started&&s.phase==='result'&&c.votes?.[p.id]?c.votes[p.id]:null;
+const roleInfo=seatRoleLabel(c,p);
+const cardStatus=started&&c.privateEvidence?.[p.id]&&['deliberation','revision','decision','vote','result'].includes(s.phase)?'<br>Private info: '+(c.privateEvidence[p.id].assigned?(c.shared[p.id]?'shared · '+esc(c.privateEvidence[p.id].source):'not disclosed'):'none'):'';
+const status=hidden?'':`<span class="choice-history">${initialWord===null?'Initial: awaiting selection':'Initial: '+esc(initialWord)}${finalWord!==null?`<br><span class="${changed?'revise-mark':''}">Revised: ${esc(finalWord)}${changed?' ↺ CHANGED':' (held)'}</span>`:''}${started&&c.selected!==null&&['vote','result'].includes(s.phase)?'<br>Bill word: '+esc(c.caseData.opts[c.selected]):''}${v?'<br><span class="vote-mark">Vote: '+v+'</span>':s.phase==='result'&&p.id===c.expert?'<br>Vote: NONVOTING':''}${cardStatus}</span>`;
+return `<div class="seat ${hidden?'':side.toLowerCase()} ${p.id===0?'me':''}"><b>P${p.id+1}${p.id===0?' ★ YOU':''}</b> · ${hidden?'???':side}<br><small>${hidden?'Card face down':roleIcon(roleInfo.kind)+' '+roleInfo.label+' · '+p.personal+' personal / '+p.presidential+' presidency pts'}</small>${status}</div>`}).join('')}
+let competitionNote='';const policyHeader=['draw','revealing','drawn'].includes(s.phase)?'':`<div class="policy-card task-section"><div class="section-label">4. ROUND POLICY & SENTENCE</div><div class="tag">Round ${s.round+1} · fictional policy scenario</div><h2>${esc(caseData.prompt)}</h2></div>`;let h=['draw','revealing','drawn'].includes(s.phase)?'':`<div class="my-role party-identity-${p.party.toLowerCase()}"><div class="experiment-tag">${experimentLabel(s)} · Round ${s.round+1}</div><strong>${roleIcon(c.expert===0?'expert':c.president===0?'president':c.caucusLeaders[s.players[0].party]===0?'caucus':'legislator')} YOU ARE P1 · ${p.party.toUpperCase()} · ${makeRole(c)}</strong><div class="pointline"><span>Personal: <b>${p.personal} pts</b></span><span>Presidency: <b>${p.presidential} pts</b></span><span>Party: <b>${s.partyPoints[p.party]} pts</b></span></div><small>Fixed incentive: ${p.motivation} · ${c.expert===0?'You CANNOT vote in this round.':'You CAN cast a YES/NO vote.'} Roles change each round.</small></div>`;
+if(!['draw','revealing','drawn'].includes(s.phase)){
+ const sequence=[['initial','1 · Choose word'],['sharing','2 · Private evidence'],['deliberation','3 · Deliberate'],['revision','4 · Revise word'],['decision','5 · President'],['vote','6 · Vote'],['result','7 · Results']];
+ const idx=sequence.findIndex(x=>x[0]===s.phase);
+ if(idx>=0){const ref=`<div class="round-reference" aria-label="Round reference"><div class="ref-title">Round reference</div><div class="ref-sponsor sponsor-${c.sponsor.toLowerCase()}">Sponsor: ${esc(c.sponsor)}</div><div class="ref-list"><div class="ref-item"><b>Communication</b><span>${esc(c.comm)}</span></div><div class="ref-item"><b>Time</b><span>${esc(c.pressure)}</span></div><div class="ref-item"><b>Authority</b><span>${esc(c.authority)}</span></div><div class="ref-item"><b>Friction</b><span>${esc(c.friction)}</span></div><div class="ref-item"><b>Caucus leaders</b><span>Blue P${c.caucusLeaders.Blue+1} · Red P${c.caucusLeaders.Red+1}</span></div></div></div>`;h+=`<div class="step-navigation" aria-label="Round progress"><div class="step-tracker"><div class="ref-title">Round steps</div><div class="step-list">${sequence.map((x,i)=>`<span class="step-token ${i<idx?'step-done':i===idx?'step-active':'step-locked'}">${esc(x[1])}</span>`).join('')}</div></div>${ref}</div><div class="current-step-instruction"><b>STEP ${idx+1} OF 7 · ${esc(sequence[idx][1].split(' · ')[1]).toUpperCase()}</b></div><div class="task-flow">`; }
+}
+if(!['draw','revealing','drawn'].includes(s.phase)){
+ const ranking=[...s.players].sort((a,b)=>(b.personal+b.presidential)-(a.personal+a.presidential));
+ const rank=ranking.findIndex(x=>x.id===0)+1,leader=ranking[0];
+ competitionNote=`<div class="competition-footnote"><b>Competition:</b> Rank ${rank}/10 · Your points: ${p.personal+p.presidential} · Leader P${leader.id+1}: ${leader.personal+leader.presidential} · Blue ${s.partyPoints.Blue} / Red ${s.partyPoints.Red}. <span>Points accumulate across 7 rounds.</span></div>`;
+ }
+if(['draw','revealing','drawn'].includes(s.phase)){const partyCard=s.phase==='draw'||s.phase==='revealing'?'?':`<div class="card-stack"><div class="card-icon">${p.party==='Blue'?'●':'◆'}</div><div>P1 · ${esc(p.party)}</div></div>`;const roleCard=s.phase==='draw'||s.phase==='revealing'?'?':`<div class="card-stack"><div class="card-icon">👤</div><div>Legislator</div></div>`;h=`<h2>Draw your cards</h2><p>Reveal your party first. Your round-specific institutional role will change during the game, but this screen starts you as a legislator entering the Assembly. The first policy stays hidden until Round 1 begins.</p><div id="drawDeck" class="card-deck ${s.phase==='revealing'?'dealing':''}"><div class="draw-card ${s.phase==='draw'||s.phase==='revealing'?'card-back':'party-'+p.party.toLowerCase()}">${partyCard}</div><div class="draw-card role-card ${s.phase==='draw'||s.phase==='revealing'?'card-back':''}">${roleCard}</div></div>${s.phase==='draw'?btn('Draw party & role cards','drawCards()'):s.phase==='revealing'?'<p class="muted">Drawing cards…</p>':`<div class="callout"><b>What do your cards mean?</b><p><b>${esc(p.party)}</b> is your randomly assigned party. The card color always matches your party: <b>Blue</b> or <b>Red</b>.</p><p><b>👤 Legislator</b> is your starting seat role. During rounds you may instead become <b>★ President</b>, <b>🔍 Expert</b>, or <b>☰ Caucus leader</b>. Expert is the only nonvoting role.</p><p><b>Decision orientation: ${esc(p.motivation)}</b>. Collective emphasizes shared outcomes; Party emphasizes party interests; Individual emphasizes personal incentives. This is an assigned profile, not proof of your actual motivation.</p><div class="role-legend"><span>👤 Legislator</span><span>★ President</span><span>🔍 Expert · nonvoting</span><span>☰ Caucus leader</span></div><div class="card-note">Stimuli cue: party color signals identity; icon signals institutional power for the current round.</div></div>${btn('Enter Assembly · Round 1','enterFirstRound()')}`}`}
+if(s.phase==='briefing'){h+=`<div class="callout"><b>Institutional briefing</b><p>Review the randomly assigned President, expert, caucus leaders, communication conditions, and institutional friction above. Your initial judgment comes next. Party affiliation and incentive orientation remain fixed during the seven rounds; institutional roles and friction can change each round.</p></div><p><button class="primary" onclick="startRound()">Start Round ${s.round+1} · Make Initial Judgment</button></p>`}
+if(s.phase==='initial'){h+=`<div class="initial-word-panel">
+<div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Select a word</span><span><b>b.</b> Rate confidence</span><span><b>c.</b> Explain your choice</span></div></div>
+<section class="workflow-card word-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Select a word</b></div><div class="policy-in-card"><span class="policy-eyebrow">ROUND ${s.round+1} · FICTIONAL POLICY PROPOSAL</span><h2>${esc(caseData.prompt)}</h2></div>${choices(caseData.opts,'wordIndex',s.ui.wordIndex)}</section>
+<section class="workflow-card confidence-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Rate your confidence</b></div><div class="confidence-block"><label for="initialConfidenceSlider">How confident are you in this word? <strong id="initialConfidence">${s.ui.confidence??50}%</strong></label><input id="initialConfidenceSlider" type="range" min="0" max="100" value="${s.ui.confidence??50}" oninput="set('confidence',Number(this.value));document.getElementById('initialConfidence').textContent=this.value+'%'"><small>Starts at 50%. This is your certainty, not a predicted chance of passage.</small></div></section>
+<section class="workflow-card reason-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Explain your choice</b><small>Required</small></div><div class="decision-reason"><label for="initialOrientationSelect">Select the main reason for your word</label><select id="initialOrientationSelect" onchange="set('initialOrientation',this.value)"><option value="" ${!s.ui.initialOrientation?'selected':''} disabled>Choose a reason</option><option value="policy-outcome" ${s.ui.initialOrientation==='policy-outcome'?'selected':''}>Expected policy outcome</option><option value="evidence" ${s.ui.initialOrientation==='evidence'?'selected':''}>Available knowledge</option><option value="party" ${s.ui.initialOrientation==='party'?'selected':''}>Party alignment</option><option value="personal" ${s.ui.initialOrientation==='personal'?'selected':''}>Personal incentive</option><option value="intuition" ${s.ui.initialOrientation==='intuition'?'selected':''}>Intuition / uncertainty</option></select></div></section><div class="submit-word step-confirm"><button type="button" id="initialContinue" class="primary" onclick="moveInitial()" ${s.ui.wordIndex===null||s.ui.wordIndex===undefined||!s.ui.initialOrientation?'disabled':''}>Confirm &amp; Continue →</button></div>
+</div>`}
+if(s.phase==='sharing'){
+ const card=c.privateEvidence[0];
+ h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review your evidence</span><span><b>b.</b> Decide to reveal or withhold</span><span><b>c.</b> Record your reason</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review your private information</b></div><div class="evidence"><b>Assignment: ${card.assigned?'PRIVATE EVIDENCE':'NO PRIVATE EVIDENCE'}</b><p><b>Source:</b> ${esc(card.source)}</p><p><b>Type:</b> ${esc(card.status||'')}</p><p><b>Relevance:</b> ${esc(card.relevance)}</p><p>${esc(card.text)}</p><small>All sources and cases in this pilot are fictional.</small></div></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Decide whether to share</b></div>${card.assigned?`<p>Decide whether to share this source with the assembly.</p><div class="row"><button class="${s.ui.share==='reveal'?'primary':''}" onclick="choose('share','reveal')">Reveal source and evidence</button><button class="${s.ui.share==='withhold'?'primary':''}" onclick="choose('share','withhold')">Withhold</button></div>`:`<p>No private evidence was assigned to you in this round. No disclosure action is required.</p>`}</section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Record your reason</b>${card.assigned?'<small>Required</small>':''}</div>${card.assigned?`<div class="decision-reason"><label for="shareOrientationSelect">Main reason for your disclosure choice</label><select id="shareOrientationSelect" onchange="set('shareOrientation',this.value)"><option value="" ${!s.ui.shareOrientation?'selected':''} disabled>Choose a reason</option><option value="evidence-value" ${s.ui.shareOrientation==='evidence-value'?'selected':''}>Help assess policy</option><option value="strategy" ${s.ui.shareOrientation==='strategy'?'selected':''}>Strategic advantage</option><option value="party" ${s.ui.shareOrientation==='party'?'selected':''}>Party interest</option><option value="uncertainty" ${s.ui.shareOrientation==='uncertainty'?'selected':''}>Uncertain relevance</option></select></div>`:`<p class="muted">No reason entry is required when no private evidence is assigned.</p>`}</section>
+ <div class="step-confirm"><button type="button" id="shareContinue" class="primary" onclick="moveShare()" ${card.assigned&&(!s.ui.share||!s.ui.shareOrientation)?'disabled':''}>Record information decision · Continue</button></div></div>`;
+}
+if(s.phase==='deliberation'){
+ h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review the context</span><span><b>b.</b> Choose your intervention</span><span><b>c.</b> Set your strategy</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review the deliberation context</b></div><div class="callout"><b>Current bill:</b> ${esc(caseData.title)}<p><b>Current question:</b> Which wording should the President ultimately select? Your initial word is <b>${esc(caseData.opts[c.initial[0]])}</b>.</p><p><b>Institutional environment:</b> ${esc(c.friction)}. The caucus and President will issue voting requests <b>after the President selects the final wording in Step 5</b>. YES and NO will refer to that complete bill, not to a word.</p></div></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Choose your intervention</b></div><p>Other legislators' initial words appear on their seats. Choose one to persuade.</p><div class="decision-reason"><label for="argumentSelect">Deliberation contribution</label><select id="argumentSelect" onchange="set('argument',this.value)"><option value="question" ${(s.ui.argument||'question')==='question'?'selected':''}>Ask for evidence</option><option value="compare" ${s.ui.argument==='compare'?'selected':''}>Compare alternatives</option><option value="defend" ${s.ui.argument==='defend'?'selected':''}>Defend a position</option></select></div><div class="decision-reason"><label for="targetSelect">Target legislator</label><select id="targetSelect" onchange="set('target',Number(this.value))">${s.players.slice(1).map(x=>`<option value="${x.id}" ${Number(s.ui.target??1)===x.id?'selected':''}>P${x.id+1} · ${x.party} · Initial: ${caseData.opts[c.initial[x.id]]}</option>`).join('')}</select></div>${c.expert===0&&c.friction==='Expert challenge'?`<div class="decision-reason"><label for="expertActionSelect">Expert action</label><select id="expertActionSelect" onchange="set('expertAction',this.value)"><option value="challenge" ${(s.ui.expertAction||'challenge')==='challenge'?'selected':''}>Challenge claims using evidence</option><option value="verify" ${s.ui.expertAction==='verify'?'selected':''}>Request independent verification</option></select></div>`:''}</section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Choose your persuasion strategy</b></div><div class="decision-reason"><label for="strategySelect">Persuasion approach</label><select id="strategySelect" onchange="set('strategy',this.value)"><option value="evidence" ${(s.ui.strategy||'evidence')==='evidence'?'selected':''}>Present evidence</option><option value="compromise" ${s.ui.strategy==='compromise'?'selected':''}>Seek compromise</option><option value="coalition" ${s.ui.strategy==='coalition'?'selected':''}>Offer cross-party coalition</option></select></div></section>
+ <div class="step-confirm">${btn('Record deliberation · Continue','moveDeliberate()')}</div></div>`;
+}
+if(s.phase==='revision'&&c.transferPromptPending){h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview"><div class="overview-title">Mid-round reflection</div><div class="task-ribbon"><span><b>a.</b> Recall a past lesson</span><span><b>b.</b> Select your approach</span><span><b>c.</b> Continue revising</span></div></div><section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Recall the previous round</b></div><p>You have already chosen your initial word, reviewed information, and deliberated in this round. Before revising your judgment, think about what you learned previously.</p><p><b>Previous lesson(s):</b> ${esc((s.learningRecords?.[s.round-1]?.lessons||[]).join('; ')||'None recorded')}</p></section><section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Choose how you are approaching this decision</b><small>Required</small></div><div class="learning-options">${[['use','I am using something learned in the previous round'],['independent','I am deciding independently of the previous round'],['unsure','Not sure yet']].map(([value,label])=>`<button type="button" class="${s.ui.transferPlan===value?'primary':''}" onclick="choose('transferPlan','${value}')">${esc(label)}</button>`).join('')}</div><label for="transferNote" class="learning-label">Optional note: What, if anything, influenced your thinking?</label><textarea id="transferNote" rows="2" maxlength="500" placeholder="Optional" oninput="set('transferNote',this.value)">${esc(s.ui.transferNote||'')}</textarea></section><section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Continue to your revised word</b></div><p>Your answer will be recorded before the final word and confidence are submitted.</p></section><div class="step-confirm"><button type="button" class="primary" onclick="saveMidRoundTransfer()" ${!s.ui.transferPlan?'disabled':''}>Save approach &amp; Continue →</button></div></div>`}
+else if(s.phase==='revision'){h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review revealed information</span><span><b>b.</b> Keep or change your word</span><span><b>c.</b> Rate confidence and reason</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review revealed information</b></div><div class="callout"><b>Deliberation summary</b><p>${c.shared.filter(Boolean).length} of 10 participants shared private information. ${c.shared.filter((v,j)=>v&&c.privateEvidence[j].relevance==='high').length} high-relevance cards were shared.</p></div><div class="subsection-block"><h4>Publicly revealed private information</h4>${c.transcript.filter(x=>x.text.startsWith('Private')).map(x=>`<div class="event"><b>${esc(x.who)}:</b> ${esc(x.text)}</div>`).join('')||'<p>No information was revealed.</p>'}</div><div class="subsection-block"><h4>External evidence · ${esc((c.evidenceLevel||'low').toUpperCase())} information</h4>${c.newEvidence?publicEvidence().map(e=>`<div class="evidence sourced-evidence"><div class="evidence-source-line"><span class="evidence-source-label">${esc(e.source)} · ${esc(e.type)}</span><span class="evidence-presenter ${e.presenterParty==='Blue'?'evidence-blue':'evidence-red'}">🔍 P${e.presenter+1} · ${esc(e.presenterParty)} · Expert</span></div><div class="evidence-body">${esc(e.statement)}</div><small>Fictional source · Presented to the assembly by the institutional expert</small></div>`).join(''):'<p class="muted">No additional external evidence in this round.</p>'}</div></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Keep or change your word</b></div><p>Initial choice: <b>${esc(caseData.opts[c.initial[0]])}</b>. Select your final choice.</p>${choices(caseData.opts,'wordIndex',s.ui.wordIndex)}</section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Rate confidence and explain</b><small>Required</small></div><div class="confidence-block"><label for="revConfidenceSlider">Confidence in your revised choice <strong id="confidenceLabel">${s.ui.confidence}%</strong></label><input id="revConfidenceSlider" type="range" min="0" max="100" value="${s.ui.confidence}" oninput="set('confidence',Number(this.value));document.getElementById('confidenceLabel').textContent=this.value+'%'"><small>This measures certainty in your revised judgment.</small></div><div class="decision-reason"><label for="revReasonSelect">Main reason for your final choice</label><select id="revReasonSelect" onchange="set('reason',this.value)"><option value="" ${!s.ui.reason?'selected':''} disabled>Choose a reason</option><option value="evidence" ${s.ui.reason==='evidence'?'selected':''}>Evidence changed or confirmed my view</option><option value="compromise" ${s.ui.reason==='compromise'?'selected':''}>Compromise with others</option><option value="party" ${s.ui.reason==='party'?'selected':''}>Party considerations</option><option value="incentives" ${s.ui.reason==='incentives'?'selected':''}>Personal incentives</option><option value="prior-belief" ${s.ui.reason==='prior-belief'?'selected':''}>Maintained prior reasoning</option><option value="uncertainty" ${s.ui.reason==='uncertainty'?'selected':''}>Uncertainty</option></select></div></section><div class="step-confirm"><button type="button" id="reviseContinue" class="primary" onclick="moveRevise()" ${s.ui.wordIndex===undefined||s.ui.wordIndex===null||!s.ui.reason?'disabled':''}>Record revised judgment</button></div></div>`}
+if(s.phase==='decision'){const counts=[0,0,0];c.final.forEach(i=>counts[i]++);h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review final preferences</span><span><b>b.</b> Determine the bill wording</span><span><b>c.</b> Continue to the vote</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review final preference tally</b></div>${caseData.opts.map((o,i)=>`<div class="event">${esc(o)}: ${counts[i]} preferences</div>`).join('')}<p>President: <b>P${c.president+1}</b>. ${c.president===0?'You choose the assembly wording.':'The simulated President chooses based on preferences and authority.'}</p></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Determine the final bill wording</b></div>${c.president===0?`${choices(caseData.opts,'selected',s.ui.selected)}`:`<p>The President is simulated in this round. Click continue to reveal the selected wording.</p>`}</section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Continue to the voting stage</b></div><p>This step reveals the final wording that will be voted on in Step 6.</p></section><div class="step-confirm">${btn(c.president===0?'Select presidential wording':'Reveal presidential selection','moveDecide()', c.president===0 && (s.ui.selected===undefined||s.ui.selected===null))}</div></div>`}
+if(s.phase==='vote'&&c.briefingHold&&!c.briefingComplete){const hold=c.briefingHold;h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review the final bill</span><span><b>b.</b> Respond to the briefing request</span><span><b>c.</b> Proceed to the vote</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review the final bill</b></div><p><b>Bill before the assembly:</b> ${esc(caseData.prompt.replace(/_{2,}/g,caseData.opts[c.selected]))}</p><p><b>YES</b> means approve this complete bill. <b>NO</b> means reject it.</p></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Respond to the briefing request</b></div><p>${hold.kind==='caucus'?'Your caucus leader requests a caucus briefing before the vote.':'The President requests a briefing before the vote.'} You may attend or decline; this is a request you can refuse.</p><p><b>Attend:</b> No attendance penalty. <b>Decline:</b> −2 personal points, but proceed immediately to voting.</p>${hold.stage==='requested'?`<div class="row">${btn('Attend briefing','openBriefing()')}${btn('Decline briefing (−2 pts)','declineBriefing()',false)}</div>`:`<p><b>Briefing underway:</b> Leadership requests your consideration; you still decide how to vote.</p><div class="row">${btn('Finish briefing · Continue to vote','finishBriefing()')}${btn('Leave briefing (−2 pts)','declineBriefing()',false)}</div>`}</section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Proceed to the vote</b></div><p>Voting is suspended until you resolve the requested briefing.</p></section></div>`;}
+
+if(s.phase==='vote'&&c.briefingComplete){h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review the final proposal</span><span><b>b.</b> Review directives and consequences</span><span><b>c.</b> Cast your vote</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review the final proposal</b></div><p><b>${esc(caseData.title)}</b></p><p><b>Final proposal:</b> ${esc(caseData.prompt.replace(/_{2,}/g,caseData.opts[c.selected]))}</p><p><b>YES</b> = approve this final proposal. <b>NO</b> = reject it.</p></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Review directives and consequences</b></div>${c.caucusLeaders[p.party]===0?`<div class="pressure"><strong>☰ YOU ARE THE ${esc(p.party.toUpperCase())} CAUCUS LEADER</strong><p>Before the assembly votes, you may pressure your party to support or reject the President's final bill. This directive is <b>non-binding</b>, and your own YES/NO vote is a separate decision.</p><div class="row"><button type="button" class="${c.humanCaucusDirective==='YES'?'primary':''}" onclick="leaderDirective('${p.party}','YES')">Pressure party: YES</button><button type="button" class="${c.humanCaucusDirective==='NO'?'primary':''}" onclick="leaderDirective('${p.party}','NO')">Pressure party: NO</button><button type="button" class="${c.humanCaucusDirective==='NONE'?'primary':''}" onclick="leaderDirective('${p.party}','NONE')">No caucus pressure</button></div><p><small>Current directive: <b>${c.humanCaucusDirective==='NONE'?'None':c.humanCaucusDirective||'Not issued'}</b>. This selection is logged separately from your vote. Compliance rewards or penalties apply only in caucus-pressure rounds when a YES/NO directive is issued.</small></p></div>`:`<p><b>Your ${esc(p.party)} caucus asks:</b> ${esc(c.directives[p.party])}</p>`}<p><b>President P${c.president+1} asks:</b> ${esc(c.presidentDirective)}</p><p>Only the active friction rule carries the leadership voting penalty.</p>${c.briefingDecision?`<p><b>Briefing:</b> ${esc(c.briefingDecision)}${c.briefingPenalty?' (−2 personal points)':''}</p>`:''}${c.expert===0?'<p class="muted">You are the nonvoting expert in this round and cannot cast a legislative vote.</p>':''}</section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Cast your vote</b></div>${c.expert!==0?`<div class="vote-comparison-grid"><div class="vote-option"><button type="button" class="${s.ui.vote==='YES'?'primary':''}" onclick="choose('vote','YES')">YES</button>${voteGainCard('YES')}</div><div class="vote-option"><button type="button" class="${s.ui.vote==='NO'?'primary':''}" onclick="choose('vote','NO')">NO</button>${voteGainCard('NO')}</div></div><small class="vote-gain-disclaimer">Projected from the game’s scoring rules and simulated votes. Points are not guaranteed. The forecast excludes previously awarded points and briefing penalties.</small>`:`<p>No vote is required from you in this round.</p>`}</section><div class="step-confirm"><button type="button" class="primary" onclick="moveVote()" ${(c.expert!==0&&!s.ui.vote)||(c.caucusLeaders[p.party]===0&&!c.humanCaucusDirective)?'disabled':''}>${c.expert===0?'Continue to results':'Record vote · Continue'}</button></div></div>`;}
+
+if(s.phase==='result'){const r=c.result;h+=`<div class="initial-word-panel"><div class="task-checklist workflow-overview" aria-label="Three tasks this step"><div class="overview-title">Your tasks</div><div class="task-ribbon"><span><b>a.</b> Review the outcome</span><span><b>b.</b> Review standings</span><span><b>c.</b> Record lesson(s)</span></div></div>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">a.</span><b>Review the bill outcome</b></div><h3>${r.pass?'Bill passed':'Bill did not pass'} · ${r.yes} YES / 9 eligible</h3><div class="row"><span class="pill">Cross-party YES support: ${r.bip?'Yes':'No'}</span><span class="pill">Bipartisan passage: ${r.bipPassed?'Yes':'No'}</span><span class="pill">Evidence-supported decision: ${r.acc?'Yes':'No'}</span><span class="pill">Preference changes: ${r.changes}</span><span class="pill">Private cards shared: ${r.revealed}</span></div><div class="callout"><b>Your round:</b> ${c.scoreDelta[0]>=0?'+':''}${c.scoreDelta[0]} personal points · ${s.players[0].personal} personal total · ${s.players[0].presidential} presidential total.</div></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">b.</span><b>Review standings</b></div><div class="scoreboard"><table><thead><tr><th>Player</th><th>Party</th><th>Personal</th><th>Presidency</th><th>Total</th></tr></thead><tbody>${s.players.map((sp,j)=>`<tr><td>P${j+1}${j===0?' ★ YOU':''}</td><td>${sp.party}</td><td>${sp.personal}</td><td>${sp.presidential}</td><td>${sp.personal+sp.presidential}</td></tr>`).join('')}</tbody></table></div></section>
+ <section class="workflow-card"><div class="workflow-title"><span class="workflow-letter">c.</span><b>Record lessons from this round</b><small>Select one or more · optional note</small></div><div class="callout"><b>Feedback:</b> The scenario's pre-coded evidence-supported solution was <b>${esc(caseData.opts[caseData.best])}</b>. This is a fictional benchmark, not an objective evaluation of real-world policy.</div><p><b>What would you carry into a new policy decision?</b></p><small>Select all that apply. “No lesson” cannot be combined with another option.</small><div class="learning-options">${[['check-evidence','Check evidence before taking a position'],['consider-alternatives','Compare multiple policy options'],['hear-others','Consider other legislators’ reasons'],['weigh-incentives','Watch for institutional or party pressure'],['none','No lesson I would carry forward']].map(([value,label])=>`<button type="button" class="${(s.ui.lessons||[]).includes(value)?'primary':''}" aria-pressed="${(s.ui.lessons||[]).includes(value)}" onclick="toggleLesson('${value}')">${esc(label)}</button>`).join('')}</div><label for="lessonNote" class="learning-label">Optional note (what did you learn?)</label><textarea id="lessonNote" rows="2" maxlength="500" placeholder="Brief note, if useful" oninput="set('lessonNote',this.value)">${esc(s.ui.lessonNote||'')}</textarea></section><div class="step-confirm"><button id="learningContinue" class="primary" onclick="next()" ${!(s.ui.lessons||[]).length?'disabled':''}>${s.round===6?'Save reflection · Complete game':'Save reflection · Next round'}</button></div></div>`}
+if(s.phase==='complete'){h=`<h2>Seven rounds completed</h2><p>The synthetic pilot is ready for descriptive analysis. Review the dashboard and export the player-round, event, and round-level datasets.</p><div class="callout">The game records simulated behavior, not empirical findings about human deliberation.</div>${btn('Begin Experiment '+(s.experimentNumber+1)+' · '+(s.experimentalCondition==='control_low'?'HIGH-information treatment':'LOW-information control'),'startNextExperiment()')}`}
+if(!['draw','revealing','drawn'].includes(s.phase))h+='</div>';
+if(competitionNote)h+=competitionNote;
+if(s.undoStack?.length&&['sharing','deliberation','revision','decision','vote','result'].includes(s.phase))h+=`<div class="stage-nav">${btn('← Back one stage / Correct my decision','goBack()',false)}<small>Reopens your previous stage and discards any later simulated actions from that stage.</small></div>`; $('task').innerHTML=h; $('stepCounter').textContent=stepLabel(s.phase); workspaceTab(activeWorkspacePane);$('log').innerHTML=(c?.transcript||[]).slice(-9).reverse().map(x=>`<div class="event"><b>${esc(x.who)}</b> · ${esc(x.text)}</div>`).join('')||'<p class="muted">No deliberation recorded yet.</p>';renderStats();save()}
+function renderStats(){if(!s.current){$('metrics').innerHTML='<p class="muted">Draw the cards and begin Round 1 to start recording behavior.</p>';$('history').innerHTML='<p class="muted">No rounds started.</p>';return}const rs=s.rounds;const total=rs.length;const avg=k=>total?(rs.reduce((a,r)=>a+Number(r[k]),0)/total).toFixed(1):'—';const sum=k=>rs.reduce((a,r)=>a+Number(r[k]),0);const yesTotal=rs.reduce((a,r)=>a+Number(r.vote_yes||0),0), noTotal=rs.reduce((a,r)=>a+Number(r.vote_no||0),0); const ranked=[...s.players].sort((a,b)=>(b.personal+b.presidential)-(a.personal+a.presidential)).slice(0,5); $('metrics').innerHTML=`<div class="metric"><b>${total}/7</b><small>Rounds completed</small></div><div class="metric"><b>${total?Math.round(100*sum('decision_evidence_consistent')/total)+'%':'—'}</b><small>Evidence-aligned decisions</small></div><div class="metric"><b>${avg('preference_changes')}</b><small>Mean preference changes</small></div><div class="metric"><b>${avg('evidence_revealed')}</b><small>Mean cards shared</small></div><div class="metric"><b>${sum('high_relevance_revealed')}</b><small>High-relevance cards shared</small></div><div class="metric"><b>${sum('bipartisan')}</b><small>Cross-party YES support</small></div><hr style="border-color:var(--line)"><div class="row"><span class="pill">Blue: ${s.partyPoints.Blue} pts</span><span class="pill">Red: ${s.partyPoints.Red} pts</span></div><p class="muted">Metrics are descriptive and calculated from completed rounds.</p><div class="dashboard-grid"><div class="mini-chart"><div class="chart-title">Party standings<small>current totals</small></div><div class="bar-label"><span>Blue</span><b>${s.partyPoints.Blue}</b></div><div class="bar-track"><div class="bar-fill color-1" style="width:${Math.max(4,Math.min(100,s.partyPoints.Blue))}%"></div></div><div class="bar-label"><span>Red</span><b>${s.partyPoints.Red}</b></div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(4,Math.min(100,s.partyPoints.Red))}%"></div></div></div><div class="mini-chart"><div class="chart-title">Legislative vote totals<small>all completed rounds</small></div><div class="bar-label"><span>YES votes</span><b>${yesTotal}</b></div><div class="bar-track"><div class="bar-fill color-2" style="width:${yesTotal+noTotal?Math.round(100*yesTotal/(yesTotal+noTotal)):0}%"></div></div><div class="bar-label"><span>NO votes</span><b>${noTotal}</b></div><div class="bar-track"><div class="bar-fill" style="width:${yesTotal+noTotal?Math.round(100*noTotal/(yesTotal+noTotal)):0}%"></div></div></div><div class="mini-chart player-bars"><div class="chart-title">Top players<small>personal + presidency</small></div>${ranked.map(pl=>`<div class="bar-row"><div class="bar-name"><span>P${pl.id+1} · ${pl.party}</span><b>${pl.personal+pl.presidential}</b></div><div class="bar-track compact"><div class="bar-fill ${pl.party==='Blue'?'color-1':''}" style="width:${Math.max(5,Math.min(100,(pl.personal+pl.presidential)))}%"></div></div></div>`).join('')}</div></div>`;const c=s.current;const activeInitial=c.initial.filter(v=>v!==null).length,activeFinal=c.final.filter(v=>v!==null).length,activeShared=c.shared.filter(Boolean).length;const currentCounts=[0,0,0],finalCounts=[0,0,0];c.initial.forEach(v=>{if(v!==null)currentCounts[v]++});c.final.forEach(v=>{if(v!==null)finalCounts[v]++});
+const chart=(values,label)=>`<div class="chart-title">${label}<small>${values.reduce((a,b)=>a+b,0)} recorded</small></div>${c.caseData.opts.map((word,i)=>`<div class="bar-label"><span>${esc(word)}</span><b>${values[i]} <small>/10</small></b></div><div class="bar-track"><div class="bar-fill color-${i}" style="width:${values[i]*10}%"></div></div>`).join('')}`;
+const completeBars=rs.length?`<div class="chart-title">Evidence alignment by round<small>1 = aligned · 0 = not</small></div><div class="trend-chart">${rs.map(r=>`<div class="trend-col"><div class="trend-value">${r.decision_evidence_consistent?'1':'0'}</div><div class="trend-bar ${r.decision_evidence_consistent?'positive':'negative'}" style="height:${r.decision_evidence_consistent?65:9}%"></div><span>R${r.round}</span></div>`).join('')}</div><div class="chart-title">Behavioral trends<small>number of players</small></div><div class="trend-chart">${rs.map(r=>`<div class="trend-col"><div class="trend-value">${r.preference_changes}</div><div class="trend-bar" style="height:${Math.max(5,r.preference_changes*10)}%"></div><span>R${r.round}</span></div>`).join('')}</div><div class="chart-legend">Gold = changed initial preference</div>`:'';
+$('metrics').innerHTML+=`<hr style="border-color:var(--line)"><h3>Live round · R${s.round+1}</h3><div class="stage-summary"><div><strong>${activeInitial}<small>/10</small></strong><span>Initial judgments</span></div><div><strong>${activeShared}<small>/10</small></strong><span>Cards shared</span></div><div><strong>${activeFinal}<small>/10</small></strong><span>Revised judgments</span></div></div><p class="muted">Stage: ${esc(s.phase)}</p>${activeInitial?chart(currentCounts,'Initial preferences'):'<p class="muted">Initial preference bars appear when judgments are submitted.</p>'}${activeFinal?chart(finalCounts,'Revised preferences'):''}${completeBars}<p class="muted" style="font-size:12px">Anonymous selection totals; trends update as each stage is completed.</p>`;$('history').innerHTML=rs.length?rs.map(r=>`<div class="event"><b>R${r.round}: ${esc(r.bill)}</b><br><small>${esc(r.evidence_level|| (r.new_external_evidence?'high':'low'))} external information · ${r.communication} communication · ${r.time_pressure} time</small><br>Changed: ${r.preference_changes}/10 · Shared: ${r.evidence_revealed}/10 · Evidence aligned: ${r.decision_evidence_consistent?'Yes':'No'}</div>`).join(''):'<p class="muted">Complete a round to see patterns.</p>'}
+function csv(rows){if(!rows.length)return '';const keys=[...new Set(rows.flatMap(x=>Object.keys(x)))];return [keys,...rows.map(r=>keys.map(k=>r[k]??''))].map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\r\n')}
+function exportStatus(msg){const el=$('exportFeedback');if(el)el.textContent=msg}
+function saveBlob(blob,name){
+ try{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.style.display='none';document.body.appendChild(a);a.click();setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},15000);exportStatus('Download requested: '+name+'. If the embedded preview prevents it, use View / copy data below.');return true}
+ catch(e){exportStatus('Download unavailable in this preview. Use View / copy data below.');return false}
+}
+function download(name,rows){if(!rows.length){exportStatus('No records available for this selection.');return}saveBlob(new Blob(['\ufeff'+csv(rows)],{type:'text/csv;charset=utf-8'}),name)}
+function playerRows(){const rows=[];for(const r of s.rounds)for(let i=0;i<N;i++){const p=r.players[i];rows.push({game_id:r.game_id,round:r.round,experimental_condition:r.experimental_condition||s.experimentalCondition||'mixed_legacy',player:`P${i+1}`,party:p.party,incentive:p.motivation,role:i===Number(r.president.slice(1))-1?'president':i===Number(r.expert.slice(1))-1?'expert':'legislator',initial_option:(s.caseOrder?CASES[s.caseOrder[r.round-1]]:CASES[r.round-1]).opts[r.initial[i]],final_option:(s.caseOrder?CASES[s.caseOrder[r.round-1]]:CASES[r.round-1]).opts[r.final[i]],preference_changed:r.initial[i]!==r.final[i],initial_confidence:r.confidenceBefore[i],final_confidence:r.confidenceAfter[i],confidence_change:r.confidenceAfter[i]-r.confidenceBefore[i],private_evidence_relevance:r.privateEvidence[i].relevance,private_evidence_source:r.privateEvidence[i].source,private_evidence_source_type:r.privateEvidence[i].source_type||'',private_evidence_status:r.privateEvidence[i].status||'',private_evidence_assigned:r.privateEvidence[i].assigned,private_evidence_shared:r.share[i],revision_reason:r.reasons[i],final_evidence_aligned:r.final[i]===(s.caseOrder?CASES[s.caseOrder[r.round-1]]:CASES[r.round-1]).best,vote:r.votes[i]||'NONVOTING',briefing_decision:i===0?r.briefing_decision:"not_applicable",briefing_penalty:i===0?r.briefing_penalty:0,briefing_issuer:r.briefing_issuer,round_friction:r.friction,institutional_role:i===Number(r.president.slice(1))-1?'President':i===Number(r.expert.slice(1))-1?'Expert':i===Number(r['caucus_'+p.party.toLowerCase()]?.slice(1))-1?'Caucus leader':'Legislator',caucus_leader:(r['caucus_'+p.party.toLowerCase()]?Number(r['caucus_'+p.party.toLowerCase()].slice(1))-1:undefined)===undefined?'':r['caucus_'+p.party.toLowerCase()],caucus_alignment:r.votes[i]&&i!==(r['caucus_'+p.party.toLowerCase()]?Number(r['caucus_'+p.party.toLowerCase()].slice(1))-1:undefined)&&r.votes[Number(r['caucus_'+p.party.toLowerCase()].slice(1))-1]?r.votes[i]===r.votes[Number(r['caucus_'+p.party.toLowerCase()].slice(1))-1]?'aligned':'dissent':'not_applicable',new_external_evidence:r.new_external_evidence,evidence_level:r.evidence_level||'',external_evidence_count:r.external_evidence_count??'',bipartisan_support:r.bipartisan_support??r.bipartisan,bipartisan_passage:r.bipartisan_passage??(r.passed&&r.bipartisan),communication:r.communication,time_pressure:r.time_pressure,authority:r.authority,collective_evidence_aligned:r.decision_evidence_consistent,personal_points_delta:r.personal_point_delta?.[i]??0,caucus_directive:r['caucus_directive_'+p.party.toLowerCase()],human_caucus_directive:i===0?r.human_caucus_directive||'':'',human_caucus_pressure_issued:i===0?r.human_caucus_pressure_issued??false:'',presidential_directive:r.presidential_directive,bill_passed:r.passed,learning_reflection:i===0?r.learning_reflection||'':'not_applicable',learning_reflection_count:i===0?r.learning_reflection_count??'':'not_applicable',learning_reflection_note:i===0?r.learning_reflection_note||'':'',current_round_transfer_intention:i===0?r.initial_transfer_intention||'':'not_applicable',current_round_transfer_note:i===0?r.initial_transfer_note||'':'',current_round_transfer_timing:i===0?r.transfer_timing||'':'',next_round_transfer_intention:i===0?r.next_round_transfer_intention||'':'not_applicable',next_round_transfer_note:i===0?r.next_round_transfer_note||'':''})}return rows}
+function exportEvents(){download('assembly_event_log.csv',s.events)}
+function roundRows(){return s.rounds.map(({players,initial,final,confidenceBefore,confidenceAfter,share,privateEvidence,reasons,votes,...x})=>x)}
+function exportRounds(){download('assembly_rounds.csv',roundRows())}
+
+// Create a standards-compliant, uncompressed ZIP locally; no network or third-party library.
+function makeZip(files){
+ const encoder=new TextEncoder(),chunks=[],central=[];let offset=0;
+ const u16=(v)=>[v&255,(v>>>8)&255],u32=(v)=>[v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255];
+ const crc32=(bytes)=>{let crc=0xffffffff;for(const b of bytes){crc^=b;for(let k=0;k<8;k++)crc=(crc>>>1)^((crc&1)?0xedb88320:0)}return (crc^0xffffffff)>>>0};
+ for(const [name,content] of files){const filename=encoder.encode(name),bytes=encoder.encode(content),crc=crc32(bytes);
+ const local=new Uint8Array([...u32(0x04034b50),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(bytes.length),...u32(bytes.length),...u16(filename.length),...u16(0),...filename]);
+ chunks.push(local,bytes);
+ const header=new Uint8Array([...u32(0x02014b50),...u16(20),...u16(20),...u16(0),...u16(0),...u16(0),...u16(0),...u32(crc),...u32(bytes.length),...u32(bytes.length),...u16(filename.length),...u16(0),...u16(0),...u16(0),...u16(0),...u32(0),...u32(offset),...filename]);central.push(header);offset+=local.length+bytes.length;
+ }
+ const centralLength=central.reduce((n,x)=>n+x.length,0);chunks.push(...central);
+ chunks.push(new Uint8Array([...u32(0x06054b50),...u16(0),...u16(0),...u16(files.length),...u16(files.length),...u32(centralLength),...u32(offset),...u16(0)]));
+ return new Blob(chunks,{type:'application/zip'});
+}
+function exportBundle(all){
+ const rows=combinedRows(all);
+ if(!rows.length){exportStatus('No saved experiment records yet. Complete at least one round.');return}
+ const wanted=all?['players','events','rounds','readme']:[...document.querySelectorAll('.export-check:checked')].map(e=>e.value);
+ const names={players:['player_round','player_rounds.csv'],events:['event_log','event_log.csv'],rounds:['round_summary','round_summaries.csv'],readme:['data_guide','data_guide.csv']};
+ const files=wanted.map(k=>[names[k][1],csv(rows.filter(x=>x.dataset===names[k][0]))]);
+ files.push(['README.txt',`DELIBERATIVE ASSEMBLY — MULTI-EXPERIMENT ARCHIVE\nGenerated: ${new Date().toISOString()}\n
+Every CSV contains an experiment column (Experiment 1, Experiment 2, etc.). A single experiment is one game session; P1 is human-controlled, nine agents are simulated. A partial game has fewer than seven completed rounds. Scores and evidence-alignment are synthetic behavioral measurements, not human causal evidence. Browser-local archives should be downloaded for permanent retention.\n`]);
+ saveBlob(makeZip(files),'assembly_all_experiments.zip');
+}
+function combinedRows(all){
+ const wanted=all?['players','events','rounds','readme']:[...document.querySelectorAll('.export-check:checked')].map(e=>e.value);
+ if(!wanted.length)return [];
+ const rows=[];const games=experimentsForExport();
+ for(const game of games){
+  const experiment=experimentLabel(game);
+  const add=(dataset,arr)=>arr.forEach((r,i)=>rows.push({experiment,dataset,record_number:i+1,...r}));
+  if(wanted.includes('players'))add('player_round',archivedDatasetRows(game,'players'));
+  if(wanted.includes('events'))add('event_log',archivedDatasetRows(game,'events'));
+  if(wanted.includes('rounds'))add('round_summary',archivedDatasetRows(game,'rounds'));
+  if(wanted.includes('readme'))add('data_guide',[
+   {field:'game_id',description:game.id},{field:'experiment',description:experiment},
+   {field:'status',description:game.phase==='complete'?'Complete 7-round game':`Partial game: ${game.rounds.length} completed rounds`},
+   {field:'scope',description:'Synthetic pilot: P1 human-controlled; nine simulated participants'},
+   {field:'player_round',description:'One record per player per completed round'},
+   {field:'event_log',description:'Event-level recorded actions; stage labels are not timestamps'},
+   {field:'round_summary',description:'One record per completed round with conditions and outcomes'},
+   {field:'evidence_alignment',description:'Agreement with fictional pre-coded benchmark, not real-world truth'},
+   {field:'limitations',description:'Simulated results cannot establish human behavior or causal effects'}]);
+ }
+ return rows;
+}
+function exportCombinedCSV(all){const rows=combinedRows(all);if(!rows.length){exportStatus('No selected data available yet.');return;}download('assembly_all_experiments.csv',rows)}
+function showDataPreview(){const rows=combinedRows(false);const el=$('dataPreview');$('dataPreviewText').value=csv(rows);el.classList.remove('hidden');exportStatus(rows.length+' records displayed. You can select and copy CSV text even when file downloads are blocked.');el.scrollIntoView({block:'nearest'});}
+async function copyPreview(){const value=$('dataPreviewText').value;try{if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(value);exportStatus('CSV copied.')}else throw new Error('clipboard unavailable')}catch(e){$('dataPreviewText').focus();$('dataPreviewText').select();exportStatus('Select all and copy with Ctrl+C (or Cmd+C).')}}
+
+function startNextExperiment(){
+ if(!s?.started||s.phase!=='complete')return;
+ // A completed experiment is first snapshotted by its stable game ID.
+ // begin() subsequently creates a new session and increments the experiment number.
+ archiveCurrentExperiment();
+ begin();
+ tab('play');
+ workspaceTab('board');
+}
+function requestReset(){
+ const el=$('resetConfirm');if(!el)return;
+ el.classList.remove('hidden');el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cancelReset(){const el=$('resetConfirm');if(el)el.classList.add('hidden');hideDeleteAllConfirm()}
+function showDeleteAllConfirm(){const el=$('deleteAllConfirm');if(el){el.classList.remove('hidden');el.scrollIntoView({block:'nearest'});}}
+function hideDeleteAllConfirm(){const el=$('deleteAllConfirm');if(el)el.classList.add('hidden')}
+function reset(){
+ archiveCurrentExperiment();
+ try{localStorage.removeItem('assemblyLearningV3')}catch(e){}
+ s=null;cancelReset();render();tab('play');window.scrollTo({top:0,behavior:'smooth'});
+}
+function resetAndDeleteAll(){
+ experimentArchive=[];experimentCounter=0;
+ try{
+   localStorage.removeItem(EXP_ARCHIVE_KEY);
+   localStorage.removeItem(EXP_COUNT_KEY);
+   localStorage.removeItem('assemblyLearningV3');
+ }catch(e){alert('Browser storage could not be cleared. Check storage permissions before assuming your data was deleted.');return;}
+ s=null;
+ cancelReset();cancelClearArchive();
+ const preview=$('dataPreview');if(preview)preview.classList.add('hidden');
+ const previewText=$('dataPreviewText');if(previewText)previewText.value='';
+ render();tab('play');
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function applyTheme(mode){document.body.classList.toggle('light',mode==='light');const b=$('themeToggle');if(b)b.textContent=mode==='light'?'☾ Dark mode':'☀ Light mode';try{localStorage.setItem('assemblyThemeV1',mode)}catch(e){}}
+function toggleTheme(){applyTheme(document.body.classList.contains('light')?'dark':'light')}
+try{applyTheme(localStorage.getItem('assemblyThemeV1')||'dark')}catch(e){applyTheme('dark')}
+restore();
+
+function setPilotView(mode){
+ if(!['game','assembly','both'].includes(mode))mode='game';
+ document.body.classList.remove('pilot-view-game','pilot-view-assembly');
+ if(mode!=='both')document.body.classList.add('pilot-view-'+mode);
+ document.querySelectorAll('[data-pilot-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.getAttribute('data-pilot-view')===mode)));
+}
+setPilotView('game');
+</script></body></html>
